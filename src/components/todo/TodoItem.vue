@@ -11,13 +11,13 @@
     <div class="list-button" v-if="todo.status == 1">
       <ButtonComponent
         class="btn-submit"
-        @handleClick="handleSubmitClick"
+        @onClick="handleSubmitClick"
         :disabled="addMode && !name.length"
         :btnLabel="getSubmitBtn"
       />
       <ButtonComponent
         class="btn-cancel"
-        @handleClick="handleCancelClick"
+        @onClick="handleCancelClick"
         :btnLabel="getCancelBtn"
       />
     </div>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import ButtonComponent from "../ButtonComponent";
+import ButtonComponent from "@/components/base/ButtonComponent";
 
 export default {
   props: {

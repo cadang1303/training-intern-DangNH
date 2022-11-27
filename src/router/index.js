@@ -22,6 +22,16 @@ const routes = [
         name: "todoapp",
         component: () => import("../components/TodoApp"),
       },
+      {
+        path: "/autocomplete",
+        name: "autocomplete",
+        component: () => import("../components/autocomplete/FilterCities"),
+      },
+      {
+        path: "/dropzone",
+        name: "dropzone",
+        component: () => import("../components/dropzone/DropZone"),
+      },
     ],
   },
   {

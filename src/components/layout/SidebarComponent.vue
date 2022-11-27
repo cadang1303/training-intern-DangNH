@@ -15,6 +15,8 @@ export default {
         { name: "Home", url: "/" },
         { name: "HelloWorld", url: "/helloworld" },
         { name: "Todo App", url: "/todoapp" },
+        { name: "AutoComplete", url: "/autocomplete" },
+        { name: "Dropzone", url: "/dropzone" },
       ],
     };
   },

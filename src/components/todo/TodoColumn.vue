@@ -22,7 +22,7 @@
         :disabled="showAddMode"
         v-if="col.status === 1"
         :btnLabel="'Thêm'"
-        @handleClick="addNewItem"
+        @onClick="addNewItem"
       />
     </div>
   </div>
@@ -30,7 +30,7 @@
 
 <script>
 import TodoItem from "./TodoItem.vue";
-import ButtonComponent from "@/components/ButtonComponent.vue";
+import ButtonComponent from "@/components/base/ButtonComponent.vue";
 import { formatDate } from "@/utils/time";
 export default {
   props: {
