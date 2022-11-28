@@ -27,11 +27,11 @@ const routes = [
         name: "autocomplete",
         component: () => import("../components/autocomplete/FilterCities"),
       },
-      {
-        path: "/dropzone",
-        name: "dropzone",
-        component: () => import("../components/dropzone/DropZone"),
-      },
+      // {
+      //   path: "/dropzone",
+      //   name: "dropzone",
+      //   component: () => import("../components/dropzone/DropZone"),
+      // },
     ],
   },
   {
