@@ -5,8 +5,8 @@
         <img src="@/assets/icon/interfaces/search.svg" />
         <span
           class="selected-item"
-          v-for="(selected, index) in selectedArr"
-          :key="index"
+          v-for="selected in selectedArr"
+          :key="selected.code"
         >
           {{ selected.name }}
           <b class="cancel-select" @click="handleCancel(selected)">x</b>
@@ -22,12 +22,12 @@
           :placeholder="placeholder"
         />
       </div>
-      <div v-if="visible && keyword.length > 0" class="options">
+      <div v-if="visible" class="options">
         <ul>
           <li
-            @click="handleSelect(item);"
-            v-for="(item, index) in filterList"
-            :key="index"
+            @click="handleSelect(item)"
+            v-for="item in filterList"
+            :key="item.code"
           >
             {{ item.name }}
           </li>
@@ -61,8 +61,10 @@ export default {
   },
   computed: {
     filterList() {
-      return this.items.filter((i) =>
-        i.name.toLowerCase().includes(this.keyword.toLowerCase())
+      return this.items.filter(
+        (i) =>
+          i.name.toLowerCase().includes(this.keyword.toLowerCase()) &&
+          this.keyword.length > 0
       );
     },
   },
