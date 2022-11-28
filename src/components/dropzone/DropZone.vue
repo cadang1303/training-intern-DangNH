@@ -81,6 +81,7 @@ export default {
           this.error = true;
           this.errorMsg = "The maximum file size is 10 MB";
         } else {
+          this.error = false;
           this.files = [...this.$refs.file.files];
           Array.from(this.files).forEach((file) => {
             if (
