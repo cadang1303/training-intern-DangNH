@@ -15,7 +15,6 @@
         ref="file"
         @change="onChange"
         multiple
-        accept=".pdf, .jpg, .jpeg, .png"
       />
       <label for="fileInput" class="file-label">
         <img class="upload-icon" src="@/assets/icon/interfaces/upload.png" />
@@ -33,7 +32,26 @@
     </div>
     <div class="preview-container" v-if="files.length">
       <div v-for="file in files" :key="file.name" class="preview-card">
-        <img class="preview-icon" src="@/assets/icon/files/unknown.png" />
+        <img
+          v-if="file.extType === 1"
+          class="preview-icon"
+          src="@/assets/icon/files/excel.png"
+        />
+        <img
+          v-if="file.extType === 2"
+          class="preview-icon"
+          src="@/assets/icon/files/pdf.png"
+        />
+        <img
+          v-if="file.extType === 3"
+          class="preview-icon"
+          src="@/assets/icon/files/word.png"
+        />
+        <img
+          v-if="file.extType === 4"
+          class="preview-icon"
+          src="@/assets/icon/files/unknown.png"
+        />
         <div class="file-content">
           <div class="file-name">{{ file.name }}</div>
           <div class="file-size">{{ Math.round(file.size / 1000) + "kB" }}</div>
@@ -58,7 +76,32 @@ export default {
   },
   methods: {
     onChange() {
-      this.files = [...this.$refs.file.files];
+      Array.from(this.$refs.file.files).forEach((file) => {
+        if (this.uploadCheck(file)) {
+          this.error = true;
+          this.errorMsg = "The maximum file size is 10 MB";
+        } else {
+          this.files = [...this.$refs.file.files];
+          Array.from(this.files).forEach((file) => {
+            if (
+              file.name.includes(".xls") ||
+              file.name.includes(".xlsx") ||
+              file.name.includes(".csv")
+            ) {
+              file.extType = 1;
+            } else if (file.name.includes(".pdf")) {
+              file.extType = 2;
+            } else if (
+              file.name.includes(".doc") ||
+              file.name.includes(".docx")
+            ) {
+              file.extType = 3;
+            } else {
+              file.extType = 4;
+            }
+          });
+        }
+      });
     },
     dragover(e) {
       e.preventDefault();
@@ -138,6 +181,7 @@ export default {
   font-size: 14px;
   line-height: 20px;
   color: #ed5d5d;
+  margin-top: 17px;
 }
 .file-label {
   font-size: 20px;
