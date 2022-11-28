@@ -30,42 +30,17 @@
     <div v-if="error" class="error">
       {{ errorMsg }}
     </div>
-    <div class="preview-container" v-if="files.length">
-      <div v-for="file in files" :key="file.name" class="preview-card">
-        <img
-          v-if="file.extType === 1"
-          class="preview-icon"
-          src="@/assets/icon/files/excel.png"
-        />
-        <img
-          v-if="file.extType === 2"
-          class="preview-icon"
-          src="@/assets/icon/files/pdf.png"
-        />
-        <img
-          v-if="file.extType === 3"
-          class="preview-icon"
-          src="@/assets/icon/files/word.png"
-        />
-        <img
-          v-if="file.extType === 4"
-          class="preview-icon"
-          src="@/assets/icon/files/unknown.png"
-        />
-        <div class="file-content">
-          <div class="file-name">{{ file.name }}</div>
-          <div class="file-size">{{ Math.round(file.size / 1000) + "kB" }}</div>
-        </div>
-        <div @click="remove(file)" class="file-cancel">
-          <img src="@/assets/icon/interfaces/close-circle.png" />
-        </div>
-      </div>
-    </div>
+    <FileItem v-if="files.length" :files="files" @onRemove="onRemove" />
   </div>
 </template>
 
 <script>
+import FileItem from "./FileItem";
+
 export default {
+  components: {
+    FileItem,
+  },
   data() {
     return {
       isDragging: false,
@@ -82,7 +57,7 @@ export default {
           this.errorMsg = "The maximum file size is 10 MB";
         } else {
           this.error = false;
-          this.files = [...this.$refs.file.files];
+          this.files.push(file);
           Array.from(this.files).forEach((file) => {
             if (
               file.name.includes(".xls") ||
@@ -117,7 +92,7 @@ export default {
       this.onChange();
       this.isDragging = false;
     },
-    remove(i) {
+    onRemove(i) {
       this.files.splice(i, 1);
     },
     uploadCheck(file) {
@@ -188,53 +163,5 @@ export default {
   font-size: 20px;
   display: block;
   cursor: pointer;
-}
-.preview-container {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  margin-top: 2rem;
-}
-.preview-card {
-  display: flex;
-  background: #ffffff;
-  border: 1px solid #dcdcdc;
-  border-radius: 3px;
-  width: 244px;
-  height: 48px;
-  padding: 5px;
-  margin-right: 17px;
-}
-.preview-icon {
-  width: 32px;
-  height: 32px;
-  margin: 2px;
-}
-.file-content {
-  padding: 4px;
-  justify-content: left;
-}
-.file-name {
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 16px;
-  color: #333333;
-  width: 125px;
-  height: 16px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.file-size {
-  font-size: 10px;
-  font-weight: 400;
-  line-height: 14px;
-  color: #666666;
-}
-.file-cancel {
-  width: 12.67px;
-  height: 12.67px;
-  margin: auto;
-  margin-right: 9.33px;
 }
 </style>
