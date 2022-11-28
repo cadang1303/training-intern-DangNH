@@ -22,10 +22,10 @@
           :placeholder="placeholder"
         />
       </div>
-      <div v-if="visible" class="options">
+      <div v-if="visible && keyword.length > 0" class="options">
         <ul>
           <li
-            @click="handleSelect(item)"
+            @click="handleSelect(item);"
             v-for="(item, index) in filterList"
             :key="index"
           >
@@ -61,9 +61,6 @@ export default {
   },
   computed: {
     filterList() {
-      if (this.keyword === "") {
-        return [];
-      }
       return this.items.filter((i) =>
         i.name.toLowerCase().includes(this.keyword.toLowerCase())
       );
@@ -72,8 +69,8 @@ export default {
   methods: {
     handleSelect(item) {
       this.$emit("onSelect", item);
-      this.visible = false;
       this.keyword = "";
+      this.visible = false;
     },
     handleCancel(item) {
       this.$emit("onCancel", item);
@@ -100,7 +97,7 @@ export default {
   flex-wrap: wrap;
   flex-direction: row;
   min-height: 49px;
-  padding: 10px;
+  padding: 8px 10px;
   gap: 4px;
   border: 1px solid #dbdbdb;
   border-radius: 4px;
@@ -115,7 +112,7 @@ export default {
   border: 1px solid #1991d2;
 }
 .autocomplete input {
-  width: 320px;
+  width: 220px;
   min-width: 50px;
   border: none;
   white-space: nowrap;
