@@ -1,3 +1,5 @@
+const MAX_SIZE = 10485760;
+
 export function validateExtension(name) {
   const pdf = new RegExp("([a-zA-Z0-9s_\\.-:])+(.pdf)$");
   const excel = new RegExp("([a-zA-Z0-9s_\\.-:])+(.xls|.xlsx|.csv)$");
@@ -11,4 +13,18 @@ export function validateExtension(name) {
   } else {
     return 4;
   }
+}
+export function validateFileSize(file) {
+  return file.size > MAX_SIZE;
+}
+export function validateDuplicate(file, fileList) {
+  var result = false;
+  fileList.forEach((f) => {
+    if (f.name === file.name) {
+      result = true;
+    } else {
+      result = false;
+    }
+  });
+  return result;
 }

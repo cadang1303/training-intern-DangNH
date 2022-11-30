@@ -30,7 +30,7 @@ const routes = [
       {
         path: "/dropzone",
         name: "dropzone",
-        component: () => import("../components/dropzone/DropZone"),
+        component: () => import("../components/dropzone/DropzoneView"),
       },
     ],
   },

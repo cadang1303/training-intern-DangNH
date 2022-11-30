@@ -41,16 +41,24 @@
 </template>
 
 <script>
-import { validateExtension } from "@/utils/extension";
-import app from "@/services/firebase";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
-
 import ButtonComponent from "@/components/base/ButtonComponent";
 import FileItem from "./FileItem";
 
-const MAX_SIZE = 10485760;
-
 export default {
+  props: {
+    error: {
+      type: Boolean,
+      default: () => false,
+    },
+    errorMsg: {
+      type: String,
+      default: () => "",
+    },
+    files: {
+      type: Array,
+      default: () => [],
+    }
+  },
   components: {
     FileItem,
     ButtonComponent,
@@ -58,28 +66,11 @@ export default {
   data() {
     return {
       isDragging: false,
-      error: false,
-      errorMsg: "",
-      files: [],
     };
   },
   methods: {
-    onChange() {
-      Array.from(this.$refs.file.files).forEach((file) => {
-        if (this.validateDuplicate(file)) {
-          this.error = true;
-          this.errorMsg = "File is already existed";
-        } else if (this.validateFileSize(file)) {
-          this.error = true;
-          this.errorMsg = "The maximum file size is 10 MB";
-        } else {
-          this.error = false;
-          this.files.push(file);
-          Array.from(this.files).forEach((file) => {
-            file.extType = validateExtension(file.name);
-          });
-        }
-      });
+    onChange(e) {
+      this.$emit("onFileInput", e.target.files);
     },
     dragover(e) {
       e.preventDefault();
@@ -90,40 +81,15 @@ export default {
     },
     drop(e) {
       e.preventDefault();
-      this.$refs.file.files = e.dataTransfer.files;
-      this.onChange();
+      this.$emit("drop", e.dataTransfer.files);
       this.isDragging = false;
     },
     onRemove(i) {
-      this.files.splice(i, 1);
+      this.$emit("onRemove", i);
     },
-    validateDuplicate(file) {
-      var result = false;
-      this.files.forEach((f) => {
-        if (f.name === file.name) {
-          result = true;
-        } else {
-          result = false;
-        }
-      });
-      return result;
-    },
-    validateFileSize(file) {
-      return file.size > MAX_SIZE;
-    },
-    async uploadFiles() {
-      try {
-        await this.files.forEach((file) => {
-          const storage = getStorage(app);
-          const storageRef = ref(storage, "files/" + file.name);
-          uploadBytes(storageRef, file).then((snapshot) => {
-            console.log("uploaded", snapshot);
-          });
-        });
-        setTimeout((this.files = []), 3000);
-      } catch (err) {
-        console.log(err);
-      }
+    uploadFiles() {
+      this.$emit("uploadFiles");
+      
     },
   },
 };
