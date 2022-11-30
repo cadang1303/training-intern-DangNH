@@ -23,7 +23,7 @@
       />
       <div class="file-content">
         <div class="file-name">{{ file.name }}</div>
-        <div class="file-size">{{ Math.round(file.size / 1000) + "kB" }}</div>
+        <div class="file-size">{{ returnFileSize(file.size) }}</div>
       </div>
       <div @click="onRemove(file)" class="file-cancel">
         <img src="@/assets/icon/interfaces/close-circle.png" />
@@ -43,6 +43,15 @@ export default {
   methods: {
     onRemove(file) {
       this.$emit("onRemove", file);
+    },
+    returnFileSize(number) {
+      if (number < 1024) {
+        return number + "bytes";
+      } else if (number >= 1024 && number < 1048576) {
+        return (number / 1024).toFixed(2) + "kB";
+      } else if (number >= 1048576) {
+        return (number / 1048576).toFixed(2) + "MB";
+      }
     },
   },
 };

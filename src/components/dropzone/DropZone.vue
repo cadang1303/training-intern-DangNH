@@ -9,7 +9,7 @@
     >
       <input
         type="file"
-        name
+        name="file"
         id="fileInput"
         class="hidden-input"
         ref="file"
@@ -31,15 +31,29 @@
       {{ errorMsg }}
     </div>
     <FileItem v-if="files.length" :files="files" @onRemove="onRemove" />
+    <ButtonComponent
+      :btnLabel="'Upload'"
+      :disabled="!files.length"
+      class="btn-upload"
+      @onClick="uploadFiles"
+    />
   </div>
 </template>
 
 <script>
+import { validateExtension } from "@/utils/extension";
+import app from "@/services/firebase";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+
+import ButtonComponent from "@/components/base/ButtonComponent";
 import FileItem from "./FileItem";
+
+const MAX_SIZE = 10485760;
 
 export default {
   components: {
     FileItem,
+    ButtonComponent,
   },
   data() {
     return {
@@ -52,29 +66,17 @@ export default {
   methods: {
     onChange() {
       Array.from(this.$refs.file.files).forEach((file) => {
-        if (this.uploadCheck(file)) {
+        if (this.validateDuplicate(file)) {
+          this.error = true;
+          this.errorMsg = "File is already existed";
+        } else if (this.validateFileSize(file)) {
           this.error = true;
           this.errorMsg = "The maximum file size is 10 MB";
         } else {
           this.error = false;
           this.files.push(file);
           Array.from(this.files).forEach((file) => {
-            if (
-              file.name.includes(".xls") ||
-              file.name.includes(".xlsx") ||
-              file.name.includes(".csv")
-            ) {
-              file.extType = 1;
-            } else if (file.name.includes(".pdf")) {
-              file.extType = 2;
-            } else if (
-              file.name.includes(".doc") ||
-              file.name.includes(".docx")
-            ) {
-              file.extType = 3;
-            } else {
-              file.extType = 4;
-            }
+            file.extType = validateExtension(file.name);
           });
         }
       });
@@ -95,8 +97,33 @@ export default {
     onRemove(i) {
       this.files.splice(i, 1);
     },
-    uploadCheck(file) {
-      return file.size > 10485760;
+    validateDuplicate(file) {
+      var result = false;
+      this.files.forEach((f) => {
+        if (f.name === file.name) {
+          result = true;
+        } else {
+          result = false;
+        }
+      });
+      return result;
+    },
+    validateFileSize(file) {
+      return file.size > MAX_SIZE;
+    },
+    async uploadFiles() {
+      try {
+        await this.files.forEach((file) => {
+          const storage = getStorage(app);
+          const storageRef = ref(storage, "files/" + file.name);
+          uploadBytes(storageRef, file).then((snapshot) => {
+            console.log("uploaded", snapshot);
+          });
+        });
+        setTimeout((this.files = []), 3000);
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
 };
@@ -163,5 +190,20 @@ export default {
   font-size: 20px;
   display: block;
   cursor: pointer;
+}
+.btn-upload {
+  width: 100px;
+  padding: 10px;
+  margin: 20px 0;
+  background: #5cb85c;
+  border: 1px solid #5cb85c;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 </style>
