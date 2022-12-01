@@ -18,30 +18,18 @@
       />
       <label for="fileInput" class="file-label">
         <img class="upload-icon" src="@/assets/icon/interfaces/upload.png" />
-        <div v-if="isDragging" class="drag-text">
-          Release to drop files here.
-        </div>
-        <div v-else>
-          <div class="drag-text">Drag and drop files</div>
-          <div class="click-input-text">Browse files</div>
-        </div>
+          <div class="drag-text">{{placeholder}}</div>
+          <div class="click-input-text">{{triggerText}}</div>
       </label>
     </div>
     <div v-if="error" class="error">
       {{ errorMsg }}
     </div>
     <FileItem v-if="files.length" :files="files" @onRemove="onRemove" />
-    <ButtonComponent
-      :btnLabel="'Upload'"
-      :disabled="!files.length"
-      class="btn-upload"
-      @onClick="uploadFiles"
-    />
   </div>
 </template>
 
 <script>
-import ButtonComponent from "@/components/base/ButtonComponent";
 import FileItem from "./FileItem";
 
 export default {
@@ -57,11 +45,18 @@ export default {
     files: {
       type: Array,
       default: () => [],
-    }
+    },
+    placeholder: {
+      type: String,
+      default: () => "Drag and drop files",
+    },
+    triggerText: {
+      type: String,
+      default: () => "Browse files",
+    },
   },
   components: {
     FileItem,
-    ButtonComponent,
   },
   data() {
     return {
@@ -87,10 +82,6 @@ export default {
     onRemove(i) {
       this.$emit("onRemove", i);
     },
-    uploadFiles() {
-      this.$emit("uploadFiles");
-      
-    },
   },
 };
 </script>
@@ -99,7 +90,6 @@ export default {
 .main {
   font-family: "Noto Sans";
   font-style: normal;
-  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -156,20 +146,5 @@ export default {
   font-size: 20px;
   display: block;
   cursor: pointer;
-}
-.btn-upload {
-  width: 100px;
-  padding: 10px;
-  margin: 20px 0;
-  background: #5cb85c;
-  border: 1px solid #5cb85c;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-}
-button:disabled {
-  opacity: 0.55;
-  cursor: default;
 }
 </style>

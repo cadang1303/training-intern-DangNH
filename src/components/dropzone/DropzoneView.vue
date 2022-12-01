@@ -1,15 +1,21 @@
 <template>
   <div class="container">
     <DropZone
-      ref="ref"
       :error="error"
       :errorMsg="errorMsg"
       :files="files"
       @onFileInput="onFileInput"
       @onRemove="onRemove"
       @drop="drop"
-      @uploadFiles="uploadFiles"
     />
+    <div class="upload">
+      <ButtonComponent
+        :btnLabel="'Upload'"
+        :disabled="!files.length"
+        class="btn-upload"
+        @onClick="uploadFiles"
+      />
+    </div>
   </div>
 </template>
 
@@ -21,15 +27,16 @@ import {
   validateFileSize,
   validateDuplicate,
 } from "@/utils/validate";
+import ButtonComponent from "@/components/base/ButtonComponent";
 import DropZone from "./DropZone";
 
 export default {
   components: {
     DropZone,
+    ButtonComponent,
   },
   data() {
     return {
-      fileDrop: {},
       files: [],
       error: false,
       errorMsg: "",
@@ -80,7 +87,23 @@ export default {
 <style scoped>
 .container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.btn-upload {
+  width: 100px;
+  padding: 10px;
+  margin: 20px 0;
+  background: #5cb85c;
+  border: 1px solid #5cb85c;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 </style>

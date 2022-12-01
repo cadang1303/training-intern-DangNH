@@ -2,22 +2,22 @@
   <div class="preview-container">
     <div v-for="file in files" :key="file.name" class="preview-card">
       <img
-        v-if="file.extType === 1"
+        v-if="file.extType === FILE_TYPE.EXCEL"
         class="preview-icon"
         src="@/assets/icon/files/excel.png"
       />
       <img
-        v-if="file.extType === 2"
+        v-if="file.extType === FILE_TYPE.PDF"
         class="preview-icon"
         src="@/assets/icon/files/pdf.png"
       />
       <img
-        v-if="file.extType === 3"
+        v-if="file.extType === FILE_TYPE.WORD"
         class="preview-icon"
         src="@/assets/icon/files/word.png"
       />
       <img
-        v-if="file.extType === 4"
+        v-if="file.extType === FILE_TYPE.OTHER"
         class="preview-icon"
         src="@/assets/icon/files/unknown.png"
       />
@@ -33,12 +33,19 @@
 </template>
 
 <script>
+import { FILE_TYPE } from "@/constants";
+
 export default {
   props: {
     files: {
       type: Array,
       default: () => [],
     },
+  },
+  data() {
+    return {
+      FILE_TYPE,
+    };
   },
   methods: {
     onRemove(file) {

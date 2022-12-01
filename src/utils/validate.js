@@ -1,17 +1,17 @@
-const MAX_SIZE = 10485760;
+import { FILE_TYPE, MAX_SIZE } from "@/constants";
 
 export function validateExtension(name) {
   const pdf = new RegExp("([a-zA-Z0-9s_\\.-:])+(.pdf)$");
   const excel = new RegExp("([a-zA-Z0-9s_\\.-:])+(.xls|.xlsx|.csv)$");
   const word = new RegExp("([a-zA-Z0-9s_\\.-:])+(.doc|.docx)$");
   if (excel.test(name.toLowerCase())) {
-    return 1;
+    return FILE_TYPE.EXCEL;
   } else if (pdf.test(name.toLowerCase())) {
-    return 2;
+    return FILE_TYPE.PDF;
   } else if (word.test(name.toLowerCase())) {
-    return 3;
+    return FILE_TYPE.WORD;
   } else {
-    return 4;
+    return FILE_TYPE.OTHER;
   }
 }
 export function validateFileSize(file) {
