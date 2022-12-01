@@ -2,7 +2,7 @@
   <div class="main">
     <div
       class="dropzone-container"
-      :class="{ 'drop-active': isDragging, 'drop-error': error }"
+      :class="{ 'drop-active': isDragging, 'drop-error': errorMsg.length }"
       @dragover="dragover"
       @dragleave="dragleave"
       @drop="drop"
@@ -18,13 +18,13 @@
       />
       <label for="fileInput" class="file-label">
         <img class="upload-icon" src="@/assets/icon/interfaces/upload.png" />
-          <div class="drag-text">{{placeholder}}</div>
-          <div class="click-input-text">{{triggerText}}</div>
+        <div class="drag-text">{{ placeholder }}</div>
+        <div class="click-input-text">{{ triggerText }}</div>
       </label>
     </div>
-    <div v-if="error" class="error">
+    <span v-if="errorMsg.length" class="error">
       {{ errorMsg }}
-    </div>
+    </span>
     <FileItem v-if="files.length" :files="files" @onRemove="onRemove" />
   </div>
 </template>
@@ -34,10 +34,6 @@ import FileItem from "./FileItem";
 
 export default {
   props: {
-    error: {
-      type: Boolean,
-      default: () => false,
-    },
     errorMsg: {
       type: String,
       default: () => "",

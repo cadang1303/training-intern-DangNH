@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <DropZone
-      :error="error"
       :errorMsg="errorMsg"
       :files="files"
       @onFileInput="onFileInput"
@@ -38,7 +37,6 @@ export default {
   data() {
     return {
       files: [],
-      error: false,
       errorMsg: "",
     };
   },
@@ -46,13 +44,11 @@ export default {
     onFileInput(data) {
       Array.from(data).forEach((file) => {
         if (validateDuplicate(file, this.files)) {
-          this.error = true;
           this.errorMsg = "File is already existed";
         } else if (validateFileSize(file)) {
-          this.error = true;
           this.errorMsg = "The maximum file size is 10 MB";
         } else {
-          this.error = false;
+          this.errorMsg = "";
           this.files.push(file);
           Array.from(this.files).forEach((file) => {
             file.extType = validateExtension(file.name);
