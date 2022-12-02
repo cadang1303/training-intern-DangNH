@@ -1,13 +1,11 @@
 <template>
   <div>
     <AutoComplete
-      :items="filterList"
+      :items="cities"
       :selectedArr="selectedCities"
-      :keyword="keyword"
       :placeholder="'Nhập tên thành phố để tìm kiếm...'"
       @onSelect="onSelect"
       @onCancel="onCancel"
-      @onInput="onInput"
     />
   </div>
 </template>
@@ -19,14 +17,17 @@ export default {
   components: {
     AutoComplete,
   },
+  data() {
+    return {};
+  },
   computed: {
-    ...mapGetters("city", ["filterList", "selectedCities", "keyword"]),
+    ...mapGetters("city", ["cities", "selectedCities"]),
   },
   mounted() {
     this.$store.dispatch("city/loadCityList");
   },
   methods: {
-    ...mapActions("city", ["onSelect", "onCancel", "onInput"]),
+    ...mapActions("city", ["onSelect", "onCancel"]),
   },
 };
 </script>
