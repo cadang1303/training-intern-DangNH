@@ -3,14 +3,7 @@
     <label for="city">
       <div class="autocomplete" @click="visible = true">
         <img src="@/assets/icon/interfaces/search.svg" />
-        <span
-          class="selected-item"
-          v-for="selected in selectedArr"
-          :key="selected.code"
-        >
-          {{ selected.name }}
-          <b class="cancel-select" @click="handleCancel(selected)">x</b>
-        </span>
+        <SelectedItems :selectedItems="selectedArr" @onCancel="onCancel" />
         <input
           type="text"
           name="city"
@@ -22,22 +15,15 @@
           @input="handleInput"
         />
       </div>
-      <div v-if="visible" class="options">
-        <ul>
-          <li
-            @click="handleSelect(item)"
-            v-for="item in items"
-            :key="item.code"
-          >
-            {{ item.name }}
-          </li>
-        </ul>
-      </div>
+      <DropdownList :items="items" @onSelect="onSelect" v-if="visible" />
     </label>
   </div>
 </template>
 
 <script>
+import SelectedItems from "./SelectedItems";
+import DropdownList from "./DropdownList";
+
 export default {
   props: {
     items: {
@@ -60,12 +46,12 @@ export default {
     };
   },
   methods: {
-    handleSelect(item) {
+    onSelect(item) {
       this.$emit("onSelect", item);
       this.keyword = "";
       this.visible = false;
     },
-    handleCancel(item) {
+    onCancel(item) {
       this.$emit("onCancel", item);
       this.keyword = "";
     },
@@ -73,6 +59,10 @@ export default {
       this.keyword = e.target.value;
       this.$emit("onInput", this.keyword);
     },
+  },
+  components: {
+    SelectedItems,
+    DropdownList,
   },
 };
 </script>
@@ -120,43 +110,5 @@ export default {
   color: #bfbfbf;
   font-family: "Noto Sans";
   font-style: normal;
-}
-.options {
-  max-height: 128px;
-  border-radius: 4px;
-  background-color: white;
-  filter: drop-shadow(0px 1px 8px rgba(102, 102, 102, 0.25));
-  overflow-y: scroll;
-  font-family: "Noto Sans JP";
-  font-style: normal;
-}
-.options ul li {
-  background-color: #f1f5f8;
-  font-size: 16px;
-  line-height: 23px;
-  height: 40px;
-  padding: 10px;
-  color: #486581;
-  cursor: pointer;
-}
-.options ul li:hover,
-.options ul li:focus,
-.active {
-  background-color: #617d98;
-  color: #ffffff;
-}
-.cancel-select {
-  cursor: pointer;
-}
-.selected-item {
-  display: inline-block;
-  padding: 4px 8px;
-  margin: 2px;
-  height: 32px;
-  background: #f0f4f8;
-  border: 1px solid #dcdcdc;
-  border-radius: 4px;
-  line-height: 20px;
-  color: #627d98;
 }
 </style>

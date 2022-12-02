@@ -25,7 +25,9 @@
     <span v-if="errorMsg.length" class="error">
       {{ errorMsg }}
     </span>
-    <FileItem v-if="files.length" :files="files" @onRemove="onRemove" />
+    <div v-if="files.length" class="preview-container">
+      <FileItem v-for="file in files" :key="file.name" :file="file" @onRemove="onRemove" />
+    </div>
   </div>
 </template>
 
@@ -142,5 +144,11 @@ export default {
   font-size: 20px;
   display: block;
   cursor: pointer;
+}
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin-top: 2rem;
 }
 </style>

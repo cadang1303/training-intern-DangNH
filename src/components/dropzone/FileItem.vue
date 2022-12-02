@@ -1,76 +1,61 @@
 <template>
-  <div class="preview-container">
-    <div v-for="file in files" :key="file.name" class="preview-card">
-      <img
-        v-if="file.extType === FILE_TYPE.EXCEL"
-        class="preview-icon"
-        src="@/assets/icon/files/excel.png"
-      />
-      <img
-        v-if="file.extType === FILE_TYPE.PDF"
-        class="preview-icon"
-        src="@/assets/icon/files/pdf.png"
-      />
-      <img
-        v-if="file.extType === FILE_TYPE.WORD"
-        class="preview-icon"
-        src="@/assets/icon/files/word.png"
-      />
-      <img
-        v-if="file.extType === FILE_TYPE.OTHER"
-        class="preview-icon"
-        src="@/assets/icon/files/unknown.png"
-      />
-      <div class="file-content">
-        <div class="file-name">{{ file.name }}</div>
-        <div class="file-size">{{ returnFileSize(file.size) }}</div>
-      </div>
-      <div @click="onRemove(file)" class="file-cancel">
-        <img src="@/assets/icon/interfaces/close-circle.png" />
-      </div>
+  <div class="preview-card">
+    <img
+      v-if="file.extType === FILE_TYPE.EXCEL"
+      class="preview-icon"
+      src="@/assets/icon/files/excel.png"
+    />
+    <img
+      v-if="file.extType === FILE_TYPE.PDF"
+      class="preview-icon"
+      src="@/assets/icon/files/pdf.png"
+    />
+    <img
+      v-if="file.extType === FILE_TYPE.WORD"
+      class="preview-icon"
+      src="@/assets/icon/files/word.png"
+    />
+    <img
+      v-if="file.extType === FILE_TYPE.OTHER"
+      class="preview-icon"
+      src="@/assets/icon/files/unknown.png"
+    />
+    <div class="file-content">
+      <div class="file-name">{{ file.name }}</div>
+      <div class="file-size">{{ returnFileSize(file.size) }}</div>
+    </div>
+    <div @click="onRemove(file)" class="file-cancel">
+      <img src="@/assets/icon/interfaces/close-circle.png" />
     </div>
   </div>
 </template>
 
 <script>
 import { FILE_TYPE } from "@/constants";
+import { returnFileSize } from "@/utils/validate";
 
 export default {
   props: {
-    files: {
-      type: Array,
-      default: () => [],
+    file: {
+      type: File,
+      default: () => null,
     },
   },
   data() {
     return {
       FILE_TYPE,
+      returnFileSize,
     };
   },
   methods: {
     onRemove(file) {
       this.$emit("onRemove", file);
     },
-    returnFileSize(number) {
-      if (number < 1024) {
-        return number + "bytes";
-      } else if (number >= 1024 && number < 1048576) {
-        return (number / 1024).toFixed(2) + "kB";
-      } else if (number >= 1048576) {
-        return (number / 1048576).toFixed(2) + "MB";
-      }
-    },
   },
 };
 </script>
 
 <style scoped>
-.preview-container {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  margin-top: 2rem;
-}
 .preview-card {
   display: flex;
   background: #ffffff;
