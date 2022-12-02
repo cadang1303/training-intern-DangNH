@@ -18,15 +18,15 @@
           id="city"
           class="autocomplete-input"
           autocomplete="off"
-          v-model="keyword"
           :placeholder="placeholder"
+          @input="handleInput"
         />
       </div>
       <div v-if="visible" class="options">
         <ul>
           <li
             @click="handleSelect(item)"
-            v-for="item in filterList"
+            v-for="item in items"
             :key="item.code"
           >
             {{ item.name }}
@@ -59,15 +59,6 @@ export default {
       visible: false,
     };
   },
-  computed: {
-    filterList() {
-      return this.items.filter(
-        (i) =>
-          i.name.toLowerCase().includes(this.keyword.toLowerCase()) &&
-          this.keyword.length > 0
-      );
-    },
-  },
   methods: {
     handleSelect(item) {
       this.$emit("onSelect", item);
@@ -77,6 +68,10 @@ export default {
     handleCancel(item) {
       this.$emit("onCancel", item);
       this.keyword = "";
+    },
+    handleInput(e) {
+      this.keyword = e.target.value;
+      this.$emit("onInput", this.keyword);
     },
   },
 };
