@@ -5,8 +5,8 @@
         <img src="@/assets/icon/interfaces/search.svg" />
         <span
           class="selected-item"
-          v-for="(selected, index) in selectedArr"
-          :key="index"
+          v-for="selected in selectedArr"
+          :key="selected.code"
         >
           {{ selected.name }}
           <b class="cancel-select" @click="handleCancel(selected)">x</b>
@@ -18,16 +18,16 @@
           id="city"
           class="autocomplete-input"
           autocomplete="off"
-          v-model="keyword"
           :placeholder="placeholder"
+          @input="handleInput"
         />
       </div>
       <div v-if="visible" class="options">
         <ul>
           <li
             @click="handleSelect(item)"
-            v-for="(item, index) in filterList"
-            :key="index"
+            v-for="item in items"
+            :key="item.code"
           >
             {{ item.name }}
           </li>
@@ -59,25 +59,18 @@ export default {
       visible: false,
     };
   },
-  computed: {
-    filterList() {
-      if (this.keyword === "") {
-        return [];
-      }
-      return this.items.filter((i) =>
-        i.name.toLowerCase().includes(this.keyword.toLowerCase())
-      );
-    },
-  },
+  computed: {},
   methods: {
     handleSelect(item) {
       this.$emit("onSelect", item);
       this.visible = false;
-      this.keyword = "";
     },
     handleCancel(item) {
       this.$emit("onCancel", item);
-      this.keyword = "";
+    },
+    handleInput(e) {
+      this.keyword = e.target.value;
+      this.$emit("onInput", this.keyword);
     },
   },
 };
@@ -100,7 +93,7 @@ export default {
   flex-wrap: wrap;
   flex-direction: row;
   min-height: 49px;
-  padding: 10px;
+  padding: 8px 10px;
   gap: 4px;
   border: 1px solid #dbdbdb;
   border-radius: 4px;
@@ -115,7 +108,7 @@ export default {
   border: 1px solid #1991d2;
 }
 .autocomplete input {
-  width: 320px;
+  width: 220px;
   min-width: 50px;
   border: none;
   white-space: nowrap;
