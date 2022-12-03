@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <DropZone @onFileInput="onFileInput" />
+    <DropZone @onFileInput="onFileInput" @uploadFiles="uploadFiles" />
   </div>
 </template>
 
@@ -25,11 +25,11 @@ export default {
     async uploadFiles() {
       try {
         for (let i = 0; i < this.files.length; i++) {
-          const storage = getStorage(app);
-          const storageRef = ref(storage, "files/" + this.files[i].name);
+          let storage = getStorage(app);
+          let storageRef = ref(storage, "files/" + this.files[i].name);
           await uploadBytes(storageRef, this.files[i]);
-          this.files.splice(this.files.indexOf(this.files[i]), 1);
         }
+        this.files = [];
       } catch (err) {
         console.log(err);
       }
