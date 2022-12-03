@@ -19,13 +19,12 @@ export function validateFileSize(file) {
 }
 export function validateDuplicate(file, fileList) {
   var result = false;
-  fileList.forEach((f) => {
-    if (f.name === file.name) {
-      result = true;
-    } else {
-      result = false;
-    }
+  let list = fileList.filter((f) => {
+    return !f.name.includes(file.name);
   });
+  if (list.length === fileList.length) {
+    result = false;
+  } else result = true;
   return result;
 }
 

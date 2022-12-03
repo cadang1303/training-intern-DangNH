@@ -2,7 +2,7 @@
   <div class="main">
     <div
       class="dropzone-container"
-      :class="{ 'drop-active': isDragging, 'drop-error': errorMsg.length }"
+      :class="{ 'drop-active': isDragging, 'drop-error': msg.error }"
       @dragover="dragover"
       @dragleave="dragleave"
       @drop="drop"
@@ -18,32 +18,46 @@
       />
       <label for="fileInput" class="file-label">
         <img class="upload-icon" src="@/assets/icon/interfaces/upload.png" />
-        <div class="drag-text">{{ placeholder }}</div>
-        <div class="click-input-text">{{ triggerText }}</div>
+        <div v-if="isDragging" class="drag-text">{{ dragText }}</div>
+        <div v-else>
+          <div class="drag-text">{{ placeholder }}</div>
+          <div class="click-input-text">{{ triggerText }}</div>
+        </div>
       </label>
     </div>
-    <span v-if="errorMsg.length" class="error">
-      {{ errorMsg }}
+    <span v-if="msg.length" :class="{ 'error': msg.error, 'success': msg.success }">
+      {{ msg.error }} {{ msg.success }}
     </span>
     <div v-if="files.length" class="preview-container">
-      <FileItem v-for="file in files" :key="file.name" :file="file" @onRemove="onRemove" />
+      <FileItem
+        v-for="file in files"
+        :key="file.name"
+        :file="file"
+        @onRemove="onRemove"
+      />
     </div>
+    <ButtonComponent
+      :btnLabel="'Upload'"
+      :disabled="!files.length"
+      class="btn-upload"
+      @onClick="uploadFiles"
+    />
   </div>
 </template>
 
 <script>
+import ButtonComponent from "@/components/base/ButtonComponent";
 import FileItem from "./FileItem";
+import { MAX_SIZE } from "@/constants";
+import {
+  validateExtension,
+  validateFileSize,
+  validateDuplicate,
+  returnFileSize,
+} from "@/utils/validate";
 
 export default {
   props: {
-    errorMsg: {
-      type: String,
-      default: () => "",
-    },
-    files: {
-      type: Array,
-      default: () => [],
-    },
     placeholder: {
       type: String,
       default: () => "Drag and drop files",
@@ -52,18 +66,49 @@ export default {
       type: String,
       default: () => "Browse files",
     },
+    dragText: {
+      type: String,
+      default: () => "Release to drop files here.",
+    },
   },
   components: {
     FileItem,
+    ButtonComponent,
   },
   data() {
     return {
       isDragging: false,
+      msg: [
+        {
+          error: "",
+        },
+        {
+          success: "",
+        },
+      ],
+      status: "",
+      files: [],
     };
   },
   methods: {
-    onChange(e) {
-      this.$emit("onFileInput", e.target.files);
+    onChange() {
+      this.msg.success = "";
+      Array.from(this.$refs.file.files).forEach((file) => {
+        if (validateDuplicate(file, this.files)) {
+          this.msg.error = "File is already existed";
+        } else if (validateFileSize(file)) {
+          this.msg.error = `The maximum file size is ${returnFileSize(
+            MAX_SIZE
+          )}.`;
+        } else {
+          this.msg.error = "";
+          this.files.push(file);
+          Array.from(this.files).forEach((file) => {
+            file.extType = validateExtension(file.name);
+          });
+        }
+      });
+      this.$emit("onFileInput", this.files);
     },
     dragover(e) {
       e.preventDefault();
@@ -74,11 +119,18 @@ export default {
     },
     drop(e) {
       e.preventDefault();
-      this.$emit("drop", e.dataTransfer.files);
+      this.$refs.file.files = e.dataTransfer.files;
+      this.onChange();
       this.isDragging = false;
     },
     onRemove(i) {
-      this.$emit("onRemove", i);
+      this.files.splice(this.files.indexOf(i), 1);
+    },
+    uploadFiles() {
+      this.$emit("uploadFiles");
+      this.msg.error = "";
+      this.msg.success = "Uploaded Successfully!";
+      this.files = [];
     },
   },
 };
@@ -140,6 +192,14 @@ export default {
   color: #ed5d5d;
   margin-top: 17px;
 }
+.success {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #5cb85c;
+  margin-top: 17px;
+}
+
 .file-label {
   font-size: 20px;
   display: block;
@@ -150,5 +210,20 @@ export default {
   flex-wrap: wrap;
   flex-direction: row;
   margin-top: 2rem;
+}
+.btn-upload {
+  width: 100px;
+  padding: 10px;
+  margin: 20px 0;
+  background: #5cb85c;
+  border: 1px solid #5cb85c;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 </style>
