@@ -25,7 +25,7 @@
         </div>
       </label>
     </div>
-    <span v-if="msg.length" :class="{ 'error': msg.error, 'success': msg.success }">
+    <span v-if="msg.length" :class="{ error: msg.error, success: msg.success }">
       {{ msg.error }} {{ msg.success }}
     </span>
     <div v-if="files.length" class="preview-container">
@@ -48,10 +48,12 @@
 <script>
 import ButtonComponent from "@/components/base/ButtonComponent";
 import FileItem from "./FileItem";
-import { MAX_SIZE } from "@/constants";
+import { MAX_SIZE, MIN_FILES, MAX_FILES } from "@/constants";
 import {
+  getFileType,
   validateExtension,
   validateFileSize,
+  validateNumberOfFiles,
   validateDuplicate,
   returnFileSize,
 } from "@/utils/validate";
@@ -86,29 +88,35 @@ export default {
           success: "",
         },
       ],
-      status: "",
       files: [],
     };
   },
   methods: {
     onChange() {
       this.msg.success = "";
-      Array.from(this.$refs.file.files).forEach((file) => {
-        if (validateDuplicate(file, this.files)) {
-          this.msg.error = "File is already existed";
-        } else if (validateFileSize(file)) {
-          this.msg.error = `The maximum file size is ${returnFileSize(
-            MAX_SIZE
-          )}.`;
-        } else {
-          this.msg.error = "";
-          this.files.push(file);
-          Array.from(this.files).forEach((file) => {
-            file.extType = validateExtension(file.name);
-          });
-        }
-      });
-      this.$emit("onFileInput", this.files);
+      const uploadFiles = [...this.$refs.file.files];
+      if (validateNumberOfFiles(uploadFiles)) {
+        this.msg.error = `You can only upload minimum ${MIN_FILES} and maximum ${MAX_FILES}.`;
+      } else {
+        uploadFiles.forEach((file) => {
+          if (validateDuplicate(file, this.files)) {
+            this.msg.error = "File is already existed.";
+          } else if (validateFileSize(file)) {
+            this.msg.error = `The maximum file size is ${returnFileSize(
+              MAX_SIZE
+            )}.`;
+          } else if (!validateExtension(file.name)) {
+            this.msg.error = "File type is not allowed to upload.";
+          } else {
+            this.msg.error = "";
+            this.files.push(file);
+            Array.from(this.files).forEach((file) => {
+              file.extType = getFileType(file.name);
+            });
+          }
+        });
+        this.$emit("onFileInput", this.files);
+      }
     },
     dragover(e) {
       e.preventDefault();
