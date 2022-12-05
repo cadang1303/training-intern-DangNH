@@ -54,6 +54,7 @@ export default {
     onCancel(item) {
       this.$emit("onCancel", item);
       this.keyword = "";
+      this.visible = false;
     },
     handleInput(e) {
       this.keyword = e.target.value;
@@ -77,7 +78,7 @@ export default {
   flex-direction: column;
   padding: 0;
   margin: 0;
-  width: 100%;
+  width: 528px;
 }
 .autocomplete {
   display: flex;

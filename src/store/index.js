@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
+import form from "./modules/form";
 import todo from "./modules/todo";
 import city from "./modules/city";
 
@@ -14,5 +15,6 @@ export default new Vuex.Store({
   modules: {
     todo,
     city,
+    form,
   },
 });

@@ -3,7 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-import "datalist-css"
+import "vue2-datepicker/index.css";
+import "datalist-css";
 import "./assets/reset.css";
 
 Vue.config.productionTip = false;

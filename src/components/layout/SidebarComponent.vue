@@ -17,6 +17,7 @@ export default {
         { name: "Todo App", url: "/todoapp" },
         { name: "AutoComplete", url: "/autocomplete" },
         { name: "Dropzone", url: "/dropzone" },
+        { name: "Multiform", url: "/form" },
       ],
     };
   },

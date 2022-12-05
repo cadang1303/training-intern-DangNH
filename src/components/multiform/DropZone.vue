@@ -25,8 +25,8 @@
         </div>
       </label>
     </div>
-    <span v-if="msg.length" :class="{ error: msg.error, success: msg.success }">
-      {{ msg.error }} {{ msg.success }}
+    <span v-if="msg.length" :class="{ error: msg }">
+      {{ msg }}
     </span>
     <div v-if="files.length" class="preview-container">
       <FileItem
@@ -36,17 +36,10 @@
         @onRemove="onRemove"
       />
     </div>
-    <!-- <ButtonComponent
-      :btnLabel="'Upload'"
-      :disabled="!files.length"
-      class="btn-upload"
-      @onClick="uploadFiles"
-    /> -->
   </div>
 </template>
 
 <script>
-// import ButtonComponent from "@/components/base/ButtonComponent";
 import FileItem from "./FileItem";
 import { MAX_SIZE, MIN_FILES, MAX_FILES } from "@/constants";
 import {
@@ -75,47 +68,36 @@ export default {
   },
   components: {
     FileItem,
-    // ButtonComponent,
   },
   data() {
     return {
       isDragging: false,
-      msg: [
-        {
-          error: "",
-        },
-        {
-          success: "",
-        },
-      ],
+      msg: "",
       files: [],
     };
   },
   methods: {
     onChange() {
-      this.msg.success = "";
       const uploadFiles = [...this.$refs.file.files];
       if (validateNumberOfFiles(uploadFiles)) {
-        this.msg.error = `You can only upload minimum ${MIN_FILES} and maximum ${MAX_FILES}.`;
+        this.msg = `You can only upload minimum ${MIN_FILES} and maximum ${MAX_FILES}.`;
       } else {
         uploadFiles.forEach((file) => {
           if (validateDuplicate(file, this.files)) {
-            this.msg.error = "File is already existed.";
+            this.msg = "File is already existed.";
           } else if (validateFileSize(file)) {
-            this.msg.error = `The maximum file size is ${returnFileSize(
-              MAX_SIZE
-            )}.`;
+            this.msg = `The maximum file size is ${returnFileSize(MAX_SIZE)}.`;
           } else if (!validateExtension(file.name)) {
-            this.msg.error = "File type is not allowed to upload.";
+            this.msg = "File type is not allowed to upload.";
           } else {
-            this.msg.error = "";
+            this.msg = "";
             this.files.push(file);
             Array.from(this.files).forEach((file) => {
               file.extType = getFileType(file.name);
             });
           }
         });
-        this.$emit("onFileInput", this.files);
+        this.$emit("onFileInput", this.files, this.msg);
       }
     },
     dragover(e) {
@@ -134,12 +116,6 @@ export default {
     onRemove(i) {
       this.files.splice(this.files.indexOf(i), 1);
     },
-    // uploadFiles() {
-    //   this.$emit("uploadFiles");
-    //   this.msg.error = "";
-    //   this.msg.success = "Uploaded Successfully!";
-    //   this.files = [];
-    // },
   },
 };
 </script>
@@ -200,14 +176,6 @@ export default {
   color: #ed5d5d;
   margin-top: 17px;
 }
-.success {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: #5cb85c;
-  margin-top: 17px;
-}
-
 .file-label {
   font-size: 20px;
   display: block;
