@@ -72,19 +72,19 @@ export default {
     },
     maxSizeMB: {
       type: Number,
-      default: () => 10,
+      required: false,
     },
     maxFiles: {
       type: Number,
-      default: () => 6,
+      required: false,
     },
     minFiles: {
       type: Number,
-      default: () => 1,
+      required: false,
     },
     validExt: {
       type: Array,
-      default: () => [],
+      required: false,
     },
   },
   components: {
@@ -110,6 +110,7 @@ export default {
       this.msg.success = "";
       const uploadFiles = [...this.$refs.file.files];
       if (
+        this.maxFiles &&
         validateNumberOfFiles(
           uploadFiles.length + this.files.length,
           this.maxFiles
@@ -120,9 +121,12 @@ export default {
         uploadFiles.forEach((file) => {
           if (validateDuplicate(file, this.files)) {
             this.msg.error = "File is already existed.";
-          } else if (validateFileSize(file, this.maxSizeMB)) {
+          } else if (this.maxSizeMB && validateFileSize(file, this.maxSizeMB)) {
             this.msg.error = `The maximum file size is ${this.maxSizeMB} MB.`;
-          } else if (!validateExtension(file.name, this.validExt)) {
+          } else if (
+            this.validExt &&
+            !validateExtension(file.name, this.validExt)
+          ) {
             this.msg.error = "File type is not allowed to upload.";
           } else {
             this.msg.error = "";
