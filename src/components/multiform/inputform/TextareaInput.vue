@@ -21,7 +21,39 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    required: {
+      type: Boolean,
+      default: () => false,
+    },
+    inputLabel: {
+      type: String,
+      default: () => "Label",
+    },
+    name: {
+      type: String,
+      default: () => "name",
+    },
+    value: {
+      type: Date,
+      required: false,
+    },
+    maxLength: {
+      type: Number,
+      required: false,
+    },
+    msg: {
+      type: String,
+      default: () => "",
+    },
+  },
+  methods: {
+    handleInput(e) {
+      this.$emit("onInput", e.target.value);
+    },
+  },
+};
 </script>
 
 <style></style>

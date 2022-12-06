@@ -8,7 +8,7 @@
       :name="name"
       type="date"
       :disabled-date="notAfterToday"
-      placeholder="0000/00/00"
+      :placeholder="placeholder"
       format="YYYY/MM/DD"
       @input="handleInput"
     ></DatePicker>
@@ -29,15 +29,19 @@ export default {
     },
     inputLabel: {
       type: String,
-      default: () => "Label",
+      required: false,
+    },
+    placeholder: {
+      type: String,
+      required: false,
     },
     name: {
       type: String,
-      default: () => "name",
+      required: false,
     },
     value: {
-      type: String,
-      default: () => "",
+      type: Date,
+      required: false,
     },
     msg: {
       type: String,

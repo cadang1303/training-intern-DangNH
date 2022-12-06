@@ -8,6 +8,7 @@
       :name="name"
       :value="value"
       :maxlength="maxLength"
+      :placeholder="placeholder"
       @input="handleInput"
     />
     <span v-if="msg" class="msg-text">
@@ -25,7 +26,11 @@ export default {
     },
     inputLabel: {
       type: String,
-      default: () => "Label",
+      required: false,
+    },
+    placeholder: {
+      type: String,
+      required: false,
     },
     name: {
       type: String,
@@ -33,11 +38,11 @@ export default {
     },
     value: {
       type: String,
-      default: () => "",
+      required: false,
     },
     maxLength: {
       type: Number,
-      default: () => 100,
+      required: false,
     },
     msg: {
       type: String,
