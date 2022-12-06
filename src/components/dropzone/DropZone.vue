@@ -38,7 +38,7 @@
     </div>
     <ButtonComponent
       :btnLabel="'Upload'"
-      :disabled="!files.length || files.length < MIN_FILES"
+      :disabled="!files.length || files.length < minFiles"
       class="btn-upload"
       @onClick="uploadFiles"
     />
@@ -48,14 +48,12 @@
 <script>
 import ButtonComponent from "@/components/base/ButtonComponent";
 import FileItem from "./FileItem";
-import { MAX_SIZE, MIN_FILES, MAX_FILES } from "@/constants";
 import {
   getFileType,
   validateExtension,
   validateFileSize,
   validateNumberOfFiles,
   validateDuplicate,
-  returnFileSize,
 } from "@/utils/validate";
 
 export default {
@@ -71,6 +69,22 @@ export default {
     dragText: {
       type: String,
       default: () => "Release to drop files here.",
+    },
+    maxSizeMB: {
+      type: Number,
+      default: () => 10,
+    },
+    maxFiles: {
+      type: Number,
+      default: () => 6,
+    },
+    minFiles: {
+      type: Number,
+      default: () => 1,
+    },
+    validExt: {
+      type: Array,
+      default: () => [],
     },
   },
   components: {
@@ -89,24 +103,26 @@ export default {
         },
       ],
       files: [],
-      MIN_FILES,
     };
   },
   methods: {
     onChange() {
       this.msg.success = "";
       const uploadFiles = [...this.$refs.file.files];
-      if (validateNumberOfFiles(uploadFiles.length + this.files.length)) {
-        this.msg.error = `You can only upload maximum ${MAX_FILES}.`;
+      if (
+        validateNumberOfFiles(
+          uploadFiles.length + this.files.length,
+          this.maxFiles
+        )
+      ) {
+        this.msg.error = `You can only upload maximum ${this.maxFiles}.`;
       } else {
         uploadFiles.forEach((file) => {
           if (validateDuplicate(file, this.files)) {
             this.msg.error = "File is already existed.";
-          } else if (validateFileSize(file)) {
-            this.msg.error = `The maximum file size is ${returnFileSize(
-              MAX_SIZE
-            )}.`;
-          } else if (!validateExtension(file.name)) {
+          } else if (validateFileSize(file, this.maxSizeMB)) {
+            this.msg.error = `The maximum file size is ${this.maxSizeMB} MB.`;
+          } else if (!validateExtension(file.name, this.validExt)) {
             this.msg.error = "File type is not allowed to upload.";
           } else {
             this.msg.error = "";

@@ -1,10 +1,4 @@
-import {
-  FILE_TYPE,
-  MAX_FILES,
-  MAX_SIZE,
-  // MIN_FILES,
-  VALID_EXT,
-} from "@/constants";
+import { FILE_TYPE } from "@/constants";
 
 function convertMBtoB(size) {
   return parseFloat(size * 1048576);
@@ -25,21 +19,21 @@ export function getFileType(name) {
   }
 }
 
-export function validateExtension(name) {
+export function validateExtension(name, validExt) {
   let result = false;
   let ext = name.split(".").pop().toLowerCase();
-  if (VALID_EXT.includes(ext)) {
+  if (validExt.includes(ext)) {
     result = true;
   }
   return result;
 }
 
-export function validateNumberOfFiles(length) {
-  return length > MAX_FILES;
+export function validateNumberOfFiles(length, maxFiles) {
+  return length > maxFiles;
 }
 
-export function validateFileSize(file) {
-  return file.size > convertMBtoB(MAX_SIZE);
+export function validateFileSize(file, maxSize) {
+  return file.size > convertMBtoB(maxSize);
 }
 
 export function validateDuplicate(file, fileList) {

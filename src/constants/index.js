@@ -6,6 +6,6 @@ export const FILE_TYPE = {
 };
 export const VALID_EXT = ['xls', 'xlsx', 'csv', 'pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg', 'bmp'];
 
-export const MAX_SIZE = 10;
+export const MAX_SIZE_MB = 10;
 export const MIN_FILES = 2;
 export const MAX_FILES = 5;
