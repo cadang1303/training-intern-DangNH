@@ -48,7 +48,7 @@
 <script>
 // import ButtonComponent from "@/components/base/ButtonComponent";
 import FileItem from "./FileItem";
-import { MAX_SIZE, MIN_FILES, MAX_FILES } from "@/constants";
+import { MAX_SIZE, MAX_FILES } from "@/constants";
 import {
   getFileType,
   validateExtension,
@@ -95,8 +95,8 @@ export default {
     onChange() {
       this.msg.success = "";
       const uploadFiles = [...this.$refs.file.files];
-      if (validateNumberOfFiles(uploadFiles)) {
-        this.msg.error = `You can only upload minimum ${MIN_FILES} and maximum ${MAX_FILES}.`;
+      if (validateNumberOfFiles(uploadFiles.length + this.files.length)) {
+        this.msg.error = `You can only upload maximum ${MAX_FILES}.`;
       } else {
         uploadFiles.forEach((file) => {
           if (validateDuplicate(file, this.files)) {

@@ -66,10 +66,10 @@ export default {
       commit("SET_PROFILE", profile);
     },
     onSetCompany({ commit }, list) {
-      commit("SET_PROFILE", list);
+      commit("SET_COMPANY_LIST", list);
     },
     onSetConfirm({ commit }, form) {
-      commit("SET_PROFILE", form);
+      commit("SET_CONFIRM_FORM", form);
     },
   },
 };

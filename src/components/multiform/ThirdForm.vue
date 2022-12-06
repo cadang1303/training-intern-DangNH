@@ -7,7 +7,7 @@
         </label>
         <textarea
           :class="{ 'form-error': msg.reason }"
-          class="form-control"
+          class="form-control-textarea"
           name="reason"
           v-model="confirmForm.reason"
           maxlength="1000"
@@ -20,20 +20,23 @@
         >
           {{ count }}/1000
         </div>
-        <span v-else>
+        <span v-else class="msg-text">
           {{ msg.reason }}
         </span>
       </div>
       <div class="form-group required">
         <label class="control-label" for="salary">Mức lương mong muốn</label>
-        <input
-          :class="{ 'form-error': msg.salary }"
-          class="form-control"
-          type="number"
-          v-model="confirmForm.salary"
-          name="salary"
-          required
-        />
+        <div class="form-salary" :class="{ 'form-salary-error': msg.salary }">
+          <input
+            class="form-salary-control"
+            type="text"
+            v-model="confirmForm.salary"
+            name="salary"
+            required
+          />
+          <span class="currency">VNĐ</span>
+        </div>
+
         <span v-if="msg.salary" class="msg-text">
           {{ msg.salary }}
         </span>
@@ -108,7 +111,7 @@ export default {
   color: #333333;
   margin-bottom: 6px;
 }
-.form-group.required .control-label:before {
+.required .control-label:before {
   content: "Must";
   font-weight: 700;
   font-size: 12px;
@@ -142,7 +145,10 @@ export default {
 .form-error {
   border: 1px solid #ed5d5d;
 }
-.form-group textarea {
+.form-error:hover {
+  border: 1px solid #ed5d5d;
+}
+.form-control-textarea {
   padding: 8px 10px;
   gap: 10px;
   width: 528px;
@@ -152,6 +158,53 @@ export default {
   border-radius: 4px;
   resize: none;
 }
+.form-control-textarea:hover {
+  border: 1px solid #1991d2;
+}
+.form-textarea-error {
+  border: 1px solid #ed5d5d;
+}
+.form-textarea-error:hover {
+  border: 1px solid #ed5d5d;
+}
+.form-salary {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8px;
+  width: 120px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+}
+.form-salary:hover {
+  border: 1px solid #1991d2;
+}
+.form-salary-error {
+  border: 1px solid #ed5d5d;
+}
+.form-salary-error:hover {
+  border: 1px solid #ed5d5d;
+}
+.form-salary-control {
+  border: none;
+  width: 78px;
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+}
+.currency {
+  font-family: "Noto Sans";
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #333333;
+}
+
 .counter {
   font-weight: 400;
   font-size: 16px;

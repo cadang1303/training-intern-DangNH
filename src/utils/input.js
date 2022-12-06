@@ -57,10 +57,10 @@ export function validateReason(reason) {
 }
 
 export function validateSalary(salary) {
-  const digit = new RegExp("/^d+$/");
+  const digit = new RegExp("(^[0-9]*$)");
   if (!salary.length) {
     return MESSAGE.REQUIRED;
-  } else if (digit.test(salary)) {
+  } else if (!digit.test(salary)) {
     return MESSAGE.DIGIT_ONLY;
   } else if (salary.length > 10) {
     return MESSAGE.MAX_LENGTH + "10";

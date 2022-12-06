@@ -1,9 +1,12 @@
 <template>
   <div class="container">
-    <form v-on:submit.prevent>
+    <form @change="onChange" @submit.prevent>
       <div class="form-container" v-for="item in companyList" :key="item.id">
         <div class="form-title">
-          <select class="form-control" @change="(e) => e.target.value">
+          <select
+            class="form-control"
+            @change="(e) => (item.company = e.target.value)"
+          >
             <option v-for="item in companies" :key="item.id" :value="item.name">
               {{ item.name }}
             </option>
@@ -75,7 +78,7 @@
       <ButtonComponent
         :btnLabel="'+ Thêm công ty'"
         class="btn-add"
-        @click="onAddNewCompany"
+        @onClick="onAddNewCompany"
       />
     </form>
   </div>
@@ -152,6 +155,7 @@ export default {
       if (!this.msg.length) {
         this.error = false;
         this.$store.dispatch("form/onSetStatusForm", this.error);
+        this.$store.dispatch("form/onSetCompany", this.companyList);
       } else {
         this.error = true;
         this.$store.dispatch("form/onSetStatusForm", this.error);
@@ -250,6 +254,9 @@ export default {
   border: 1px solid #1991d2;
 }
 .form-error {
+  border: 1px solid #ed5d5d;
+}
+.form-error:hover {
   border: 1px solid #ed5d5d;
 }
 .form-group textarea {
