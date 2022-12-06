@@ -36,13 +36,13 @@ export default {
     },
     async uploadFiles() {
       try {
-        for (let i = 0; i < this.files.length; i++) {
-          console.log(this.files[i]);
+        const upload = [...this.files];
+        for (let i = 0; i < upload.length; i++) {
           let storage = getStorage(app);
-          let storageRef = ref(storage, "files/" + this.files[i].name);
-          await uploadBytes(storageRef, this.files[i]);
+          let storageRef = ref(storage, "files/" + upload[i].name);
+          await uploadBytes(storageRef, upload[i]);
+          this.files = this.files.filter((f) => f.name != upload[i].name);
         }
-        this.files = [];
       } catch (err) {
         console.log(err);
       }
