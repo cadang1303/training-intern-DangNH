@@ -97,7 +97,7 @@ import DatePicker from "vue2-datepicker";
 import { mapGetters } from "vuex";
 import { validateName, validateDob, validateDesc } from "@/utils/input";
 
-import DropZone from "./DropZone";
+import DropZone from "./inputform/DropZone";
 import AutoComplete from "@/components/autocomplete/AutoComplete";
 
 export default {

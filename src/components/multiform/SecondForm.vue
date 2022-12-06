@@ -88,12 +88,12 @@
 import ButtonComponent from "@/components/base/ButtonComponent";
 // import { uuid } from "uuidv4";
 import DatePicker from "vue2-datepicker";
-// import {
-//   validateCompanyList,
-//   validateJobName,
-//   validateJobDesc,
-//   validateJobDate,
-// } from "@/utils/input";
+import {
+  validateCompanyList,
+  validateJobName,
+  validateJobDesc,
+  validateJobDate,
+} from "@/utils/input";
 
 export default {
   components: {
@@ -143,15 +143,15 @@ export default {
       this.companyList.splice(this.companyList.indexOf(i), 1);
     },
     onChange() {
-      // this.msg.companyList = validateCompanyList(this.companyList);
-      // for (let i = 0; i < this.companyList.length; i++) {
-      //   this.msg.jobName = validateJobName(this.companyList[i].jobName);
-      //   this.msg.jobDesc = validateJobDesc(this.companyList[i].jobDesc);
-      //   this.msg.jobDate = validateJobDate(
-      //     this.companyList[i].startDate,
-      //     this.companyList[i].endDate
-      //   );
-      // }
+      this.msg.companyList = validateCompanyList(this.companyList);
+      for (let i = 0; i < this.companyList.length; i++) {
+        this.msg.jobName = validateJobName(this.companyList[i].jobName);
+        this.msg.jobDesc = validateJobDesc(this.companyList[i].jobDesc);
+        this.msg.jobDate = validateJobDate(
+          this.companyList[i].startDate,
+          this.companyList[i].endDate
+        );
+      }
       if (!this.msg.length) {
         this.error = false;
         this.$store.dispatch("form/onSetStatusForm", this.error);
