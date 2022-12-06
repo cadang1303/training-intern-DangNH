@@ -1,10 +1,14 @@
 import {
   FILE_TYPE,
-  MAX_SIZE,
-  MIN_FILES,
   MAX_FILES,
+  MAX_SIZE,
+  // MIN_FILES,
   VALID_EXT,
 } from "@/constants";
+
+function convertMBtoB(size) {
+  return parseFloat(size * 1048576);
+}
 
 export function getFileType(name) {
   const pdf = new RegExp("([a-zA-Z0-9s_\\.-:])+(.pdf)$");
@@ -26,22 +30,20 @@ export function validateExtension(name) {
   let ext = name.split(".").pop().toLowerCase();
   if (VALID_EXT.includes(ext)) {
     result = true;
-  } else result = false;
+  }
   return result;
 }
 
 export function validateNumberOfFiles(files) {
-  if (files.length > MAX_FILES || files.length < MIN_FILES) {
-    return true;
-  } else return false;
+  return files.length > MAX_FILES;
 }
 
 export function validateFileSize(file) {
-  return file.size > MAX_SIZE;
+  return file.size > convertMBtoB(MAX_SIZE);
 }
 
 export function validateDuplicate(file, fileList) {
-  var result = false;
+  let result = false;
   let list = fileList.filter((f) => {
     return !f.name.includes(file.name);
   });

@@ -38,7 +38,7 @@
     </div>
     <ButtonComponent
       :btnLabel="'Upload'"
-      :disabled="!files.length"
+      :disabled="!files.length || files.length < MIN_FILES"
       class="btn-upload"
       @onClick="uploadFiles"
     />
@@ -89,34 +89,31 @@ export default {
         },
       ],
       files: [],
+      MIN_FILES,
     };
   },
   methods: {
     onChange() {
       this.msg.success = "";
       const uploadFiles = [...this.$refs.file.files];
-      if (validateNumberOfFiles(uploadFiles)) {
-        this.msg.error = `You can only upload minimum ${MIN_FILES} and maximum ${MAX_FILES}.`;
-      } else {
-        uploadFiles.forEach((file) => {
-          if (validateDuplicate(file, this.files)) {
-            this.msg.error = "File is already existed.";
-          } else if (validateFileSize(file)) {
-            this.msg.error = `The maximum file size is ${returnFileSize(
-              MAX_SIZE
-            )}.`;
-          } else if (!validateExtension(file.name)) {
-            this.msg.error = "File type is not allowed to upload.";
-          } else {
-            this.msg.error = "";
-            this.files.push(file);
-            Array.from(this.files).forEach((file) => {
-              file.extType = getFileType(file.name);
-            });
-          }
-        });
-        this.$emit("onFileInput", this.files);
-      }
+      uploadFiles.forEach((file) => {
+        if (validateDuplicate(file, this.files)) {
+          this.msg.error = "File is already existed.";
+        } else if (validateFileSize(file)) {
+          this.msg.error = `The maximum file size is ${returnFileSize(
+            MAX_SIZE
+          )}.`;
+        } else if (!validateExtension(file.name)) {
+          this.msg.error = "File type is not allowed to upload.";
+        } else {
+          this.msg.error = "";
+          this.files.push(file);
+          Array.from(this.files).forEach((file) => {
+            file.extType = getFileType(file.name);
+          });
+        }
+      });
+      this.$emit("onFileInput", this.files);
     },
     dragover(e) {
       e.preventDefault();
@@ -135,10 +132,14 @@ export default {
       this.files.splice(this.files.indexOf(i), 1);
     },
     uploadFiles() {
-      this.$emit("uploadFiles");
-      this.msg.error = "";
-      this.msg.success = "Uploaded Successfully!";
-      this.files = [];
+      if (validateNumberOfFiles(MAX_FILES)) {
+        this.msg.error = `You can only upload maximum ${MAX_FILES}.`;
+      } else {
+        this.$emit("uploadFiles");
+        this.msg.error = "";
+        this.msg.success = "Uploaded Successfully!";
+        this.files = [];
+      }
     },
   },
 };
