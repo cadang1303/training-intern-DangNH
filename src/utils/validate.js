@@ -34,8 +34,8 @@ export function validateExtension(name) {
   return result;
 }
 
-export function validateNumberOfFiles(files) {
-  return files.length > MAX_FILES;
+export function validateNumberOfFiles(length) {
+  return length > MAX_FILES;
 }
 
 export function validateFileSize(file) {
