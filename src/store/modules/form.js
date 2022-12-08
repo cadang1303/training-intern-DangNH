@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
   namespaced: true,
   state: {
-    error: false,
+    error: true,
     cityList: [],
     info: {
       profile: {

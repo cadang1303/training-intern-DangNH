@@ -10,7 +10,8 @@ export function validateName(name) {
 
 export function validateDob(date) {
   const today = new Date();
-  if (date.getTime() > today.getTime()) {
+  date = new Date(date).getTime();
+  if (date > today) {
     return MESSAGE.NOT_VALID;
   } else return "";
 }
@@ -27,6 +28,16 @@ export function validateCompanyList(list) {
   } else return "";
 }
 
+export function validateCompany(company, list) {
+  let result = "";
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].company === company) {
+      result = MESSAGE.NOT_VALID;
+    }
+  }
+  return result;
+}
+
 export function validateJobName(jobName) {
   if (!jobName.length) {
     return MESSAGE.REQUIRED;
@@ -35,15 +46,27 @@ export function validateJobName(jobName) {
   } else return "";
 }
 
-export function validateJobDate(startDate, endDate) {
-  const today = new Date();
+export function validateJobDate(startDate, endDate, list) {
+  const today = new Date().getTime();
+  let result = "";
+  startDate = new Date(startDate).getTime();
+  endDate = new Date(endDate).getTime();
   if (startDate >= today || endDate >= today || startDate >= endDate) {
     return MESSAGE.NOT_VALID;
-  } else return "";
+  } else if (list.length > 1) {
+    for (let i = 0; i < list.length; i++) {
+      if (startDate < list[i].endDate) {
+        result = MESSAGE.NOT_VALID;
+      }
+    }
+  } else result = "";
+  return result;
 }
 
 export function validateJobDesc(jobDesc) {
-  if (jobDesc.length > 5000) {
+  if (!jobDesc.length) {
+    return MESSAGE.REQUIRED;
+  } else if (jobDesc.length > 5000) {
     return MESSAGE.MAX_LENGTH + "5000";
   } else return "";
 }

@@ -1,52 +1,29 @@
 <template>
   <div class="form-container">
-    <form @change="onChange" @submit.prevent>
-      <div class="form-group required">
-        <label class="control-label" for="name">Họ và tên</label>
-        <input
-          :class="{ 'form-error': msg.name }"
-          class="form-control"
-          name="name"
-          type="text"
-          v-model="profile.name"
-        />
-        <span v-if="msg.name" class="msg-text">
-          {{ msg.name }}
-        </span>
-      </div>
-      <div class="form-group required">
-        <label class="control-label" for="dob">Ngày sinh</label>
-        <DatePicker
-          class="control-date"
-          v-model="profile.dob"
-          name="dob"
-          type="date"
-          :disabled-date="notAfterToday"
-          placeholder="0000/00/00"
-          format="YYYY/MM/DD"
-        ></DatePicker>
-        <span v-if="msg.dob" class="msg-text">
-          {{ msg.dob }}
-        </span>
-      </div>
-      <div class="form-group">
-        <label class="control-label" for="city">Thành phố</label>
-        <select
-          class="form-control"
-          :class="{ 'form-error': msg.city }"
-          name="city"
-          id="city"
-          @change="(e) => (profile.city = e.target.value)"
-        >
-          <option selected disabled hidden>--Chọn thành phố--</option>
-          <option v-for="city in cityList" :key="city.code" :value="city.name">
-            {{ city.name }}
-          </option>
-        </select>
-        <span v-if="msg.city" class="msg-text">
-          {{ msg.city }}
-        </span>
-      </div>
+    <form @input="onChange" @submit.prevent>
+      <InputField
+        :required="true"
+        inputLabel="Họ và tên"
+        name="fullname"
+        :msg="msg.name"
+        :value.sync="profile.name"
+        @onInput="onInputName"
+      />
+      <DatepickerForm
+        :required="true"
+        inputLabel="Ngày sinh"
+        :msg="msg.dob"
+        name="dob"
+        :value.sync="profile.dob"
+        @onInput="onInputDob"
+      />
+      <SelectInput
+        name="city"
+        :list="cityList"
+        placeholder="--Chọn thành phố--"
+        :value.sync="profile.city"
+        inputLabel="Thành phố"
+      />
       <div class="form-group">
         <label class="control-label" for="job">Vị trí làm việc</label>
         <small>Có thể chọn nhiều vị trí mà bạn muốn làm việc</small>
@@ -54,31 +31,20 @@
           :items="jobs"
           :selectedArr="profile.positions"
           :placeholder="'Chọn các vị trí mà bạn muốn'"
-          :keyword="profile.position"
           @onSelect="onSelectPosition"
           @onCancel="onRemovePosition"
           @onInput="onInputPosition"
         />
       </div>
-      <div class="form-group">
-        <label class="control-label" for="desc">Mô tả về bản thân</label>
-        <textarea
-          :class="{ 'form-error': msg.desc }"
-          class="form-control"
-          v-model="profile.desc"
-          maxlength="1000"
-        ></textarea>
-        <div
-          v-if="!msg.desc"
-          class="counter"
-          :class="{ 'counter-max': count === 1000 }"
-        >
-          {{ count }}/1000
-        </div>
-        <span v-else class="msg-text">
-          {{ msg.desc }}
-        </span>
-      </div>
+      <TextareaInput
+        name="desc"
+        :value.sync="profile.desc"
+        :onCounter="true"
+        :maxLength="1000"
+        :msg="msg.desc"
+        inputLabel="Mô tả về bản thân"
+        @onInput="onInputDesc"
+      />
       <div class="form-group">
         <label class="control-label" for="profile-pic">Ảnh cá nhân</label>
         <DropZone
@@ -93,30 +59,34 @@
 </template>
 
 <script>
-import DatePicker from "vue2-datepicker";
 import { mapGetters } from "vuex";
 import { validateName, validateDob, validateDesc } from "@/utils/input";
-
+import DatepickerForm from "./inputform/DatepickerForm";
+import InputField from "./inputform/InputField";
+import SelectInput from "./inputform/SelectInput";
+import TextareaInput from "./inputform/TextareaInput";
 import DropZone from "./inputform/DropZone";
 import AutoComplete from "@/components/autocomplete/AutoComplete";
 
 export default {
   components: {
-    DatePicker,
+    DatepickerForm,
     DropZone,
     AutoComplete,
+    InputField,
+    SelectInput,
+    TextareaInput,
   },
   data() {
     return {
       profile: {
         name: "",
-        dob: "0000/00/00",
+        dob: null,
         desc: "",
         city: "",
         positions: [],
         images: [],
       },
-      position: "",
       jobs: [
         { id: 1, name: "BE Dev" },
         { id: 2, name: "FE Dev" },
@@ -126,25 +96,9 @@ export default {
         { id: 6, name: "QC" },
         { id: 7, name: "Game Dev" },
       ],
-      count: 0,
-      msg: [],
-      error: false,
+      msg: {},
+      error: true,
     };
-  },
-  watch: {
-    "profile.desc"(value) {
-      this.profile.desc = value;
-      this.count = this.profile.desc.length;
-      this.msg.desc = validateDesc(this.profile.desc);
-    },
-    "profile.name"(value) {
-      this.profile.name = value;
-      this.msg.name = validateName(this.profile.name);
-    },
-    "profile.dob"(value) {
-      this.profile.dob = value;
-      this.msg.dob = validateDob(this.profile.dob);
-    },
   },
   mounted() {
     this.$store.dispatch("form/loadCityList");
@@ -153,30 +107,39 @@ export default {
     ...mapGetters("form", ["cityList"]),
   },
   methods: {
-    notAfterToday(date) {
-      const today = new Date();
-      return date.getTime() > today.getTime();
+    onInputName() {
+      this.msg.name = validateName(this.profile.name);
+    },
+    onInputDob() {
+      this.msg.dob = validateDob(this.profile.dob);
+    },
+    onInputDesc() {
+      this.msg.desc = validateDesc(this.profile.desc);
     },
     onInputPosition(value) {
       this.position = value;
     },
     onSelectPosition(item) {
       this.profile.positions.push(item);
-      this.jobs.splice(this.jobs.indexOf(item), 1);
+      this.jobs = this.jobs.filter((p) => p.name != item.name);
     },
     onRemovePosition(item) {
       this.jobs.push(item);
-      this.profile.positions.splice(this.profile.positions.indexOf(item), 1);
+      this.profile.positions = this.profile.positions.filter(
+        (p) => p.name != item.name
+      );
     },
     onImageInput(data) {
       this.profile.images = data;
     },
     onChange() {
-      if (!this.msg.length) {
-        this.$store.dispatch("form/onSetStatusForm", false);
+      if (!this.msg.name && !this.msg.desc && !this.msg.dob) {
+        this.error = false;
+        this.$store.dispatch("form/onSetStatusForm", this.error);
         this.$store.dispatch("form/onSetProfile", this.profile);
       } else {
-        this.$store.dispatch("form/onSetStatusForm", true);
+        this.error = true;
+        this.$store.dispatch("form/onSetStatusForm", this.error);
       }
     },
   },
@@ -236,47 +199,5 @@ export default {
 }
 .form-control:hover {
   border: 1px solid #1991d2;
-}
-.form-error {
-  border: 1px solid #ed5d5d;
-}
-.form-error:hover {
-  border: 1px solid #ed5d5d;
-}
-.form-group textarea {
-  padding: 8px 10px;
-  width: 528px;
-  height: 152px;
-  background: #ffffff;
-  border: 1px solid #dcdcdc;
-  border-radius: 4px;
-  resize: none;
-}
-.control-date {
-  width: 118px;
-  height: 40px;
-}
-.option-select {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20;
-  color: #333333;
-}
-.counter {
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #666666;
-  margin: 10px 0;
-}
-.counter-max {
-  color: #ed5d5d;
-}
-.msg-text {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 20px;
-  color: #ed5d5d;
 }
 </style>

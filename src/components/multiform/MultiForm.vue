@@ -22,7 +22,7 @@
       />
       <ButtonComponent
         v-if="currentStep > 1 && currentStep < 3"
-        :btnLabel="'Quay lại'"
+        btnLabel="Quay lại"
         class="btn btn-back"
         @onClick="goBack"
       />
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import ButtonComponent from "@/components//base/ButtonComponent";
+import ButtonComponent from "@/components/base/ButtonComponent";
 import FirstForm from "./FirstForm";
 import SecondForm from "./SecondForm";
 import ThirdForm from "./ThirdForm";
@@ -56,8 +56,8 @@ export default {
   },
   computed: {
     error() {
-      return this.$store.getters["form/error"]
-    },  
+      return this.$store.getters["form/error"];
+    },
     getSubmitBtn() {
       return this.currentStep === 3 ? "Hoàn thành" : "Tiếp";
     },

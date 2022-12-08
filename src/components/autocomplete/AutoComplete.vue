@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <label for="city">
+    <label for="autocomplete">
       <div class="autocomplete" @click="visible = true">
         <img src="@/assets/icon/interfaces/search.svg" />
         <SelectedItems :selectedItems="selectedArr" @onCancel="onCancel" />
@@ -103,9 +103,6 @@ export default {
   width: 220px;
   min-width: 50px;
   border: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .autocomplete input::placeholder {
   color: #bfbfbf;

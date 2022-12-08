@@ -1,29 +1,16 @@
 <template>
   <div class="form-container">
-    <form @change="onChange" @submit.prevent>
-      <div class="form-group required">
-        <label class="control-label" for="reason">
-          Lý do muốn ứng tuyển vào công ty
-        </label>
-        <textarea
-          :class="{ 'form-error': msg.reason }"
-          class="form-control-textarea"
-          name="reason"
-          v-model="confirmForm.reason"
-          maxlength="1000"
-          required
-        ></textarea>
-        <div
-          v-if="!msg.reason"
-          class="counter"
-          :class="{ 'counter-max': count === 1000 }"
-        >
-          {{ count }}/1000
-        </div>
-        <span v-else class="msg-text">
-          {{ msg.reason }}
-        </span>
-      </div>
+    <form @input="onChange" @submit.prevent>
+      <TextareaInput
+        inputLabel="Lý do muốn ứng tuyển vào công ty"
+        :required="true"
+        :onCounter="true"
+        name="reason"
+        :maxLength="1000"
+        :msg="msg.reason"
+        :value.sync="confirmForm.reason"
+        @onInput="onInputReason"
+      />
       <div class="form-group required">
         <label class="control-label" for="salary">Mức lương mong muốn</label>
         <div class="form-salary" :class="{ 'form-salary-error': msg.salary }">
@@ -47,8 +34,12 @@
 
 <script>
 import { validateReason, validateSalary } from "@/utils/input";
+import TextareaInput from "./inputform/TextareaInput";
 
 export default {
+  components: {
+    TextareaInput,
+  },
   data() {
     return {
       count: 0,
@@ -61,17 +52,15 @@ export default {
     };
   },
   watch: {
-    "confirmForm.reason"(value) {
-      this.confirmForm.reason = value;
-      this.count = this.confirmForm.reason.length;
-      this.msg.reason = validateReason(this.confirmForm.reason);
-    },
     "confirmForm.salary"(value) {
       this.confirmForm.salary = value;
       this.msg.salary = validateSalary(this.confirmForm.salary);
     },
   },
   methods: {
+    onInputReason() {
+      this.msg.reason = validateReason(this.confirmForm.reason);
+    },
     onChange() {
       if (!this.msg.length) {
         this.error = false;

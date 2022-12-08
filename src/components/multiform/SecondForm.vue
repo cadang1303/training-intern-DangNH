@@ -1,76 +1,54 @@
 <template>
   <div class="container">
-    <form @change="onChange" @submit.prevent>
+    <form @input="onChange" @submit.prevent>
       <div class="form-container" v-for="item in companyList" :key="item.id">
         <div class="form-title">
-          <select
-            class="form-control"
-            @change="(e) => (item.company = e.target.value)"
-          >
-            <option v-for="item in companies" :key="item.id" :value="item.name">
-              {{ item.name }}
-            </option>
-          </select>
+          <select class="form-control" @change="onInputCompany(item)">
+            <option v-for="c in companies" :key="c.id" :value="c.name">
+              {{ c.name }}
+            </option></select
+          >>
           <img
             src="@/assets/icon/interfaces/Trash.png"
             class="btn-remove"
             @click="onRemoveCompany(item)"
           />
         </div>
-        <div class="form-group required">
-          <label class="control-label" for="jobName">Vị trí từng làm</label>
+        <InputField
+          :required="true"
+          inputLabel="Vị trí từng làm"
+          name="jobName"
+          :msg="item.msg.jobName"
+          :value.sync="item.jobName"
+          @onInput="onInputJobName(item)"
+        />
+        <DatepickerForm
+          :required="true"
+          inputLabel="Thời gian làm việc"
+          placeholder="0000/00/00"
+          name="startDate"
+          :value.sync="item.startDate"
+          :msg="item.msg.jobDate"
+          @onInput="onInputStartDate(item)"
+        >
+          &nbsp; - &nbsp;
           <input
-            :class="{ 'form-error': msg.jobName }"
-            class="form-control"
-            type="text"
-            v-model="item.jobName"
-            name="jobName"
-            maxlength="100"
-          />
-          <span v-if="msg.jobName" class="msg-text">
-            {{ msg.jobName }}
-          </span>
-        </div>
-        <div class="form-group required">
-          <label class="control-label" for="jobTime">Thời gian làm việc</label>
-          <div class="jobtime">
-            <DatePicker
-              class="control-date"
-              type="date"
-              v-model="item.startDate"
-              placeholder="0000/00/00"
-              format="YYYY/MM/DD"
-              :disabled-date="notAfterToday"
-            ></DatePicker>
-            -
-            <DatePicker
-              class="control-date"
-              type="date"
-              v-model="item.endDate"
-              placeholder="0000/00/00"
-              format="YYYY/MM/DD"
-              :disabled-date="notAfterToday"
-            ></DatePicker>
-          </div>
-          <span v-if="msg.jobDate" class="msg-text">
-            {{ msg.jobDate }}
-          </span>
-        </div>
-        <div class="form-group required">
-          <label class="control-label" for="jobDesc">
-            Mô tả về công việc
-          </label>
-          <textarea
-            :class="{ 'form-error': msg.jobDesc }"
-            class="form-control"
-            name="jobDesc"
-            v-model="item.jobDesc"
-            maxlength="5000"
-          ></textarea>
-          <span v-if="msg.jobDesc" class="msg-text">
-            {{ msg.jobDesc }}
-          </span>
-        </div>
+            type="date"
+            :class="{ 'form-error': item.msg.jobDate }"
+            class="control-date"
+            v-model="item.endDate"
+            name="endDate"
+            placeholder="0000/00/00"
+            format="YYYY/MM/DD"
+        /></DatepickerForm>
+        <TextareaInput
+          inputLabel="Mô tả về công việc"
+          :maxLength="5000"
+          :value.sync="item.jobDesc"
+          :msg="item.msg.jobDesc"
+          :required="true"
+          @onInput="onInputJobDesc"
+        />
       </div>
       <span v-if="msg.companyList" class="msg-text">
         {{ msg.companyList }}
@@ -86,19 +64,23 @@
 
 <script>
 import ButtonComponent from "@/components/base/ButtonComponent";
-// import { uuid } from "uuidv4";
-import DatePicker from "vue2-datepicker";
+import InputField from "./inputform/InputField";
+import DatepickerForm from "./inputform/DatepickerForm.vue";
 import {
   validateCompanyList,
   validateJobName,
   validateJobDesc,
   validateJobDate,
+  validateCompany,
 } from "@/utils/input";
+import TextareaInput from "./inputform/TextareaInput";
 
 export default {
   components: {
-    DatePicker,
     ButtonComponent,
+    DatepickerForm,
+    InputField,
+    TextareaInput,
   },
   data() {
     return {
@@ -110,6 +92,7 @@ export default {
           jobDesc: "",
           startDate: "",
           endDate: "",
+          msg: {},
         },
       ],
       companies: [
@@ -120,14 +103,10 @@ export default {
         { id: 5, name: "MOR 5" },
       ],
       error: false,
-      msg: [],
+      msg: {},
     };
   },
   methods: {
-    notAfterToday(date) {
-      const today = new Date();
-      return date.getTime() > today.getTime();
-    },
     onAddNewCompany() {
       this.companyList.push({
         id: Math.random() * 999999,
@@ -136,8 +115,21 @@ export default {
         jobDesc: "",
         startDate: "",
         endDate: "",
+        msg: {},
       });
       this.$store.dispatch("form/onSetCompany", this.companyList);
+    },
+    onInputCompany(i) {
+      i.msg.company = validateCompany(i.company, this.companyList);
+    },
+    onInputStartDate(i) {
+      i.msg.jobDate = validateJobDate(i.startDate, i.endDate, this.companyList);
+    },
+    onInputJobName(i) {
+      i.msg.jobName = validateJobName(i.jobName);
+    },
+    onInputJobDesc(i) {
+      i.msg.jobDesc = validateJobDesc(i.jobDesc);
     },
     onRemoveCompany(i) {
       this.companyList.splice(this.companyList.indexOf(i), 1);
@@ -145,15 +137,18 @@ export default {
     onChange() {
       this.msg.companyList = validateCompanyList(this.companyList);
       for (let i = 0; i < this.companyList.length; i++) {
-        this.msg.jobName = validateJobName(this.companyList[i].jobName);
-        this.msg.jobDesc = validateJobDesc(this.companyList[i].jobDesc);
-        this.msg.jobDate = validateJobDate(
-          this.companyList[i].startDate,
-          this.companyList[i].endDate
-        );
+        if (
+          this.companyList[i].msg.jobDate ||
+          this.companyList[i].msg.jobName ||
+          this.companyList[i].msg.jobDesc
+        ) {
+          this.error = true;
+        } else this.error = false;
       }
-      if (!this.msg.length) {
+      if (!this.msg.companyList) {
         this.error = false;
+      } else this.error = true;
+      if (!this.error) {
         this.$store.dispatch("form/onSetStatusForm", this.error);
         this.$store.dispatch("form/onSetCompany", this.companyList);
       } else {
@@ -269,8 +264,15 @@ export default {
   resize: none;
 }
 .control-date {
-  width: 118px;
-  height: 40px;
+  padding: 8px 10px;
+  width: 122px;
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  font-family: "Noto Sans JP";
 }
 .msg-text {
   font-style: normal;
