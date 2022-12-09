@@ -3,16 +3,22 @@
     <form @input="onChange" @submit.prevent>
       <div class="form-container" v-for="item in companyList" :key="item.id">
         <div class="form-title">
-          <select class="form-control" @change="onInputCompany(item)">
+          <select
+            class="form-control"
+            @change="(e) => (item.company = e.target.value)"
+          >
             <option v-for="c in companies" :key="c.id" :value="c.name">
               {{ c.name }}
-            </option></select
-          >>
+            </option>
+          </select>
           <img
             src="@/assets/icon/interfaces/Trash.png"
             class="btn-remove"
             @click="onRemoveCompany(item)"
           />
+          <span v-if="item.msg.company" class="msg-text">
+            {{ item.msg.company }}
+          </span>
         </div>
         <InputField
           :required="true"
@@ -20,7 +26,6 @@
           name="jobName"
           :msg="item.msg.jobName"
           :value.sync="item.jobName"
-          @onInput="onInputJobName(item)"
         />
         <DatepickerForm
           :required="true"
@@ -29,7 +34,6 @@
           name="startDate"
           :value.sync="item.startDate"
           :msg="item.msg.jobDate"
-          @onInput="onInputStartDate(item)"
         >
           &nbsp; - &nbsp;
           <input
@@ -40,14 +44,14 @@
             name="endDate"
             placeholder="0000/00/00"
             format="YYYY/MM/DD"
-        /></DatepickerForm>
+          />
+        </DatepickerForm>
         <TextareaInput
           inputLabel="Mô tả về công việc"
           :maxLength="5000"
           :value.sync="item.jobDesc"
           :msg="item.msg.jobDesc"
           :required="true"
-          @onInput="onInputJobDesc"
         />
       </div>
       <span v-if="msg.companyList" class="msg-text">
@@ -74,6 +78,7 @@ import {
   validateCompany,
 } from "@/utils/input";
 import TextareaInput from "./inputform/TextareaInput";
+import { companies } from "@/data/data";
 
 export default {
   components: {
@@ -95,16 +100,44 @@ export default {
           msg: {},
         },
       ],
-      companies: [
-        { id: 1, name: "MOR 1" },
-        { id: 2, name: "MOR 2" },
-        { id: 3, name: "MOR 3" },
-        { id: 4, name: "MOR 4" },
-        { id: 5, name: "MOR 5" },
-      ],
-      error: false,
+      companies,
+      error: true,
       msg: {},
     };
+  },
+  watch: {
+    companyList: {
+      deep: true,
+      handler() {
+        this.msg.companyList = validateCompanyList(this.companyList);
+        for (let i = 0; i < this.companyList.length; i++) {
+          this.companyList[i].msg.company = validateCompany(
+            this.companyList[i],
+            this.companyList
+          );
+          this.companyList[i].msg.jobDate = validateJobDate(
+            this.companyList[i],
+            this.companyList
+          );
+          this.companyList[i].msg.jobName = validateJobName(
+            this.companyList[i].jobName
+          );
+          this.companyList[i].msg.jobDesc = validateJobDesc(
+            this.companyList[i].jobDesc
+          );
+
+          if (
+            this.msg.companyList ||
+            this.companyList[i].msg.company ||
+            this.companyList[i].msg.jobDate ||
+            this.companyList[i].msg.jobName ||
+            this.companyList[i].msg.jobDesc
+          ) {
+            this.error = true;
+          } else this.error = false;
+        }
+      },
+    },
   },
   methods: {
     onAddNewCompany() {
@@ -119,32 +152,10 @@ export default {
       });
       this.$store.dispatch("form/onSetCompany", this.companyList);
     },
-    onInputCompany(i) {
-      i.msg.company = validateCompany(i.company, this.companyList);
-    },
-    onInputStartDate(i) {
-      i.msg.jobDate = validateJobDate(i.startDate, i.endDate, this.companyList);
-    },
-    onInputJobName(i) {
-      i.msg.jobName = validateJobName(i.jobName);
-    },
-    onInputJobDesc(i) {
-      i.msg.jobDesc = validateJobDesc(i.jobDesc);
-    },
     onRemoveCompany(i) {
       this.companyList.splice(this.companyList.indexOf(i), 1);
     },
     onChange() {
-      this.msg.companyList = validateCompanyList(this.companyList);
-      for (let i = 0; i < this.companyList.length; i++) {
-        if (
-          this.companyList[i].msg.jobDate ||
-          this.companyList[i].msg.jobName ||
-          this.companyList[i].msg.jobDesc
-        ) {
-          this.error = true;
-        } else this.error = false;
-      }
       if (!this.msg.companyList) {
         this.error = false;
       } else this.error = true;
@@ -205,38 +216,6 @@ export default {
   width: 32px;
   height: 32px;
   margin: auto;
-}
-.form-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-top: 10px;
-}
-.control-label {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: #333333;
-  margin-bottom: 6px;
-}
-.form-group.required .control-label:before {
-  content: "Must";
-  font-weight: 700;
-  font-size: 12px;
-  line-height: 20px;
-  color: #ffffff;
-  border-radius: 3px;
-  padding: 0 8px;
-  margin-right: 8px;
-  width: 45px;
-  height: 20px;
-  background: #627d98;
-}
-.form-group small {
-  font-weight: 400;
-  font-size: 12px;
-  color: #666666;
-  margin: 4px;
 }
 .form-control {
   padding: 8px 10px;

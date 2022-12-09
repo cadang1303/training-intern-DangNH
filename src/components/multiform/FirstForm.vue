@@ -7,7 +7,6 @@
         name="fullname"
         :msg="msg.name"
         :value.sync="profile.name"
-        @onInput="onInputName"
       />
       <DatepickerForm
         :required="true"
@@ -15,7 +14,6 @@
         :msg="msg.dob"
         name="dob"
         :value.sync="profile.dob"
-        @onInput="onInputDob"
       />
       <SelectInput
         name="city"
@@ -43,14 +41,15 @@
         :maxLength="1000"
         :msg="msg.desc"
         inputLabel="Mô tả về bản thân"
-        @onInput="onInputDesc"
       />
       <div class="form-group">
         <label class="control-label" for="profile-pic">Ảnh cá nhân</label>
         <DropZone
-          :placeholder="'Hãy kéo và thả ảnh vào đây hoặc'"
-          :triggerText="'nhấn vào đây'"
+          placeholder="Hãy kéo và thả ảnh vào đây hoặc"
+          triggerText="nhấn vào đây"
           :files="profile.images"
+          :maxFiles="3"
+          :validExt="['jpg', 'png', 'jpeg']"
           @onFileInput="onImageInput"
         />
       </div>
@@ -61,6 +60,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { validateName, validateDob, validateDesc } from "@/utils/input";
+import { jobs } from "@/data/data";
 import DatepickerForm from "./inputform/DatepickerForm";
 import InputField from "./inputform/InputField";
 import SelectInput from "./inputform/SelectInput";
@@ -87,15 +87,7 @@ export default {
         positions: [],
         images: [],
       },
-      jobs: [
-        { id: 1, name: "BE Dev" },
-        { id: 2, name: "FE Dev" },
-        { id: 3, name: "QA" },
-        { id: 4, name: "BA" },
-        { id: 5, name: "Tester" },
-        { id: 6, name: "QC" },
-        { id: 7, name: "Game Dev" },
-      ],
+      jobs,
       msg: {},
       error: true,
     };
@@ -106,16 +98,21 @@ export default {
   computed: {
     ...mapGetters("form", ["cityList"]),
   },
+  watch: {
+    profile: {
+      deep: true,
+      handler() {
+        this.msg.name = validateName(this.profile.name);
+        this.msg.dob = validateDob(this.profile.dob);
+        this.msg.desc = validateDesc(this.profile.desc);
+
+        if (this.msg.name || this.msg.dob || this.msg.desc) {
+          this.error = true;
+        } else this.error = false;
+      },
+    },
+  },
   methods: {
-    onInputName() {
-      this.msg.name = validateName(this.profile.name);
-    },
-    onInputDob() {
-      this.msg.dob = validateDob(this.profile.dob);
-    },
-    onInputDesc() {
-      this.msg.desc = validateDesc(this.profile.desc);
-    },
     onInputPosition(value) {
       this.position = value;
     },
@@ -133,13 +130,9 @@ export default {
       this.profile.images = data;
     },
     onChange() {
-      if (!this.msg.name && !this.msg.desc && !this.msg.dob) {
-        this.error = false;
-        this.$store.dispatch("form/onSetStatusForm", this.error);
+      this.$store.dispatch("form/onSetStatusForm", this.error);
+      if (!this.error) {
         this.$store.dispatch("form/onSetProfile", this.profile);
-      } else {
-        this.error = true;
-        this.$store.dispatch("form/onSetStatusForm", this.error);
       }
     },
   },

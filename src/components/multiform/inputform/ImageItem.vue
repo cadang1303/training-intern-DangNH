@@ -1,28 +1,7 @@
 <template>
   <div class="preview-card">
-    <img
-      v-if="file.extType === FILE_TYPE.EXCEL"
-      class="preview-icon"
-      src="@/assets/icon/files/excel.png"
-    />
-    <img
-      v-if="file.extType === FILE_TYPE.PDF"
-      class="preview-icon"
-      src="@/assets/icon/files/pdf.png"
-    />
-    <img
-      v-if="file.extType === FILE_TYPE.WORD"
-      class="preview-icon"
-      src="@/assets/icon/files/word.png"
-    />
-    <img
-      v-if="file.extType === FILE_TYPE.OTHER"
-      class="preview-icon"
-      src="@/assets/icon/files/unknown.png"
-    />
     <div class="file-content">
-      <div class="file-name">{{ file.name }}</div>
-      <div class="file-size">{{ returnFileSize(file.size) }}</div>
+      <img :src="generateURL(file)" class="preview-img" />
     </div>
     <div @click="onRemove(file)" class="file-cancel">
       <img src="@/assets/icon/interfaces/close-circle.png" />
@@ -31,9 +10,6 @@
 </template>
 
 <script>
-import { FILE_TYPE } from "@/constants";
-import { returnFileSize } from "@/utils/validate";
-
 export default {
   props: {
     file: {
@@ -42,14 +18,18 @@ export default {
     },
   },
   data() {
-    return {
-      FILE_TYPE,
-      returnFileSize,
-    };
+    return {};
   },
   methods: {
     onRemove(file) {
       this.$emit("onRemove", file);
+    },
+    generateURL(file) {
+      let fileSrc = URL.createObjectURL(file);
+      setTimeout(() => {
+        URL.revokeObjectURL(fileSrc);
+      }, 1000);
+      return fileSrc;
     },
   },
 };
@@ -62,14 +42,12 @@ export default {
   border: 1px solid #dcdcdc;
   border-radius: 3px;
   width: 244px;
-  height: 48px;
   padding: 5px;
   margin-right: 17px;
 }
-.preview-icon {
-  width: 32px;
-  height: 32px;
-  margin: 2px;
+.preview-img {
+  height: 200px;
+  width: 150px;
 }
 .file-content {
   padding: 4px;

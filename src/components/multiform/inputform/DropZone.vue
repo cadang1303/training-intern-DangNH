@@ -17,38 +17,38 @@
         multiple
       />
       <label for="fileInput" class="file-label">
-        <img class="upload-icon" src="@/assets/icon/interfaces/upload.png" />
-        <div v-if="isDragging" class="drag-text">{{ dragText }}</div>
-        <div v-else>
-          <div class="drag-text">{{ placeholder }}</div>
-          <div class="click-input-text">{{ triggerText }}</div>
+        <div class="placeholder">
+          <img class="upload-icon" src="@/assets/icon/interfaces/upload.png" />
+          <div v-if="isDragging" class="drag-text">{{ dragText }}</div>
+          <div v-else>
+            <div class="drag-text">{{ placeholder }}</div>
+            <div class="click-input-text">{{ triggerText }}</div>
+          </div>
         </div>
       </label>
     </div>
-    <span v-if="msg.length" :class="{ error: msg }">
-      {{ msg }}
+    <span v-if="msg.length" :class="{ error: msg.error, success: msg.success }">
+      {{ msg.error }} {{ msg.success }}
     </span>
     <div v-if="files.length" class="preview-container">
-      <FileItem
-        v-for="file in files"
-        :key="file.name"
-        :file="file"
-        @onRemove="onRemove"
-      />
-    </div>
+        <ImageItem
+          v-for="file in files"
+          :key="file.name"
+          :file="file"
+          @onRemove="onRemove"
+        />
+      </div>
   </div>
 </template>
 
 <script>
-import FileItem from "./FileItem";
-import { MAX_SIZE, MIN_FILES, MAX_FILES } from "@/constants";
+import ImageItem from "./ImageItem";
 import {
   getFileType,
   validateExtension,
   validateFileSize,
   validateNumberOfFiles,
   validateDuplicate,
-  returnFileSize,
 } from "@/utils/validate";
 
 export default {
@@ -65,39 +65,72 @@ export default {
       type: String,
       default: () => "Release to drop files here.",
     },
+    maxSizeMB: {
+      type: Number,
+      required: false,
+    },
+    maxFiles: {
+      type: Number,
+      required: false,
+    },
+    minFiles: {
+      type: Number,
+      required: false,
+    },
+    validExt: {
+      type: Array,
+      required: false,
+    },
   },
   components: {
-    FileItem,
+    ImageItem,
   },
   data() {
     return {
       isDragging: false,
-      msg: "",
+      msg: [
+        {
+          error: "",
+        },
+        {
+          success: "",
+        },
+      ],
       files: [],
     };
   },
   methods: {
     onChange() {
+      this.msg.success = "";
       const uploadFiles = [...this.$refs.file.files];
-      if (validateNumberOfFiles(uploadFiles)) {
-        this.msg = `You can only upload minimum ${MIN_FILES} and maximum ${MAX_FILES}.`;
+      if (
+        this.maxFiles &&
+        validateNumberOfFiles(
+          uploadFiles.length + this.files.length,
+          this.maxFiles
+        )
+      ) {
+        this.msg.error = `You can only upload maximum ${this.maxFiles}.`;
       } else {
         uploadFiles.forEach((file) => {
           if (validateDuplicate(file, this.files)) {
-            this.msg = "File is already existed.";
-          } else if (validateFileSize(file)) {
-            this.msg = `The maximum file size is ${returnFileSize(MAX_SIZE)}.`;
-          } else if (!validateExtension(file.name)) {
-            this.msg = "File type is not allowed to upload.";
+            this.msg.error = "File is already existed.";
+          } else if (this.maxSizeMB && validateFileSize(file, this.maxSizeMB)) {
+            this.msg.error = `The maximum file size is ${this.maxSizeMB} MB.`;
+          } else if (
+            this.validExt &&
+            !validateExtension(file.name, this.validExt)
+          ) {
+            this.msg.error = "File type is not allowed to upload.";
           } else {
-            this.msg = "";
+            this.msg.error = "";
             this.files.push(file);
             Array.from(this.files).forEach((file) => {
               file.extType = getFileType(file.name);
             });
           }
         });
-        this.$emit("onFileInput", this.files, this.msg);
+        this.$emit("onFileInput", this.files);
       }
     },
     dragover(e) {
@@ -176,6 +209,14 @@ export default {
   color: #ed5d5d;
   margin-top: 17px;
 }
+.success {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #5cb85c;
+  margin-top: 17px;
+}
+
 .file-label {
   font-size: 20px;
   display: block;
@@ -186,6 +227,7 @@ export default {
   flex-wrap: wrap;
   flex-direction: row;
   margin-top: 2rem;
+  overflow-x: scroll;
 }
 .btn-upload {
   width: 100px;

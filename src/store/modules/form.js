@@ -35,6 +35,7 @@ export default {
     profile: (state) => state.info.profile,
     companyList: (state) => state.info.companyList,
     confirmForm: (state) => state.info.confirmForm,
+    info: (state) => state.info,
     error: (state) => state.error,
   },
   mutations: {

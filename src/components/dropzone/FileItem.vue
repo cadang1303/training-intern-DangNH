@@ -80,7 +80,7 @@ export default {
   font-weight: 700;
   line-height: 16px;
   color: #333333;
-  width: 125px;
+  width: 170px;
   height: 16px;
   white-space: nowrap;
   overflow: hidden;
@@ -96,6 +96,7 @@ export default {
   width: 12.67px;
   height: 12.67px;
   margin: auto;
-  margin-right: 9.33px;
+  /* margin-right: 9.33px; */
+  cursor: pointer;
 }
 </style>

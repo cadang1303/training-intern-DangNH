@@ -36,26 +36,24 @@
         @onRemove="onRemove"
       />
     </div>
-    <!-- <ButtonComponent
+    <ButtonComponent
       :btnLabel="'Upload'"
-      :disabled="!files.length"
+      :disabled="!files.length || files.length < minFiles"
       class="btn-upload"
       @onClick="uploadFiles"
-    /> -->
+    />
   </div>
 </template>
 
 <script>
-// import ButtonComponent from "@/components/base/ButtonComponent";
+import ButtonComponent from "@/components/base/ButtonComponent";
 import FileItem from "./FileItem";
-import { MAX_SIZE, MAX_FILES } from "@/constants";
 import {
   getFileType,
   validateExtension,
   validateFileSize,
   validateNumberOfFiles,
   validateDuplicate,
-  returnFileSize,
 } from "@/utils/validate";
 
 export default {
@@ -72,10 +70,26 @@ export default {
       type: String,
       default: () => "Release to drop files here.",
     },
+    maxSizeMB: {
+      type: Number,
+      required: false,
+    },
+    maxFiles: {
+      type: Number,
+      required: false,
+    },
+    minFiles: {
+      type: Number,
+      required: false,
+    },
+    validExt: {
+      type: Array,
+      required: false,
+    },
   },
   components: {
     FileItem,
-    // ButtonComponent,
+    ButtonComponent,
   },
   data() {
     return {
@@ -95,17 +109,24 @@ export default {
     onChange() {
       this.msg.success = "";
       const uploadFiles = [...this.$refs.file.files];
-      if (validateNumberOfFiles(uploadFiles.length + this.files.length)) {
-        this.msg.error = `You can only upload maximum ${MAX_FILES}.`;
+      if (
+        this.maxFiles &&
+        validateNumberOfFiles(
+          uploadFiles.length + this.files.length,
+          this.maxFiles
+        )
+      ) {
+        this.msg.error = `You can only upload maximum ${this.maxFiles}.`;
       } else {
         uploadFiles.forEach((file) => {
           if (validateDuplicate(file, this.files)) {
             this.msg.error = "File is already existed.";
-          } else if (validateFileSize(file)) {
-            this.msg.error = `The maximum file size is ${returnFileSize(
-              MAX_SIZE
-            )}.`;
-          } else if (!validateExtension(file.name)) {
+          } else if (this.maxSizeMB && validateFileSize(file, this.maxSizeMB)) {
+            this.msg.error = `The maximum file size is ${this.maxSizeMB} MB.`;
+          } else if (
+            this.validExt &&
+            !validateExtension(file.name, this.validExt)
+          ) {
             this.msg.error = "File type is not allowed to upload.";
           } else {
             this.msg.error = "";
@@ -134,12 +155,12 @@ export default {
     onRemove(i) {
       this.files.splice(this.files.indexOf(i), 1);
     },
-    // uploadFiles() {
-    //   this.$emit("uploadFiles");
-    //   this.msg.error = "";
-    //   this.msg.success = "Uploaded Successfully!";
-    //   this.files = [];
-    // },
+    uploadFiles() {
+      this.$emit("uploadFiles");
+      this.msg.error = "";
+      this.msg.success = "Uploaded Successfully!";
+      this.files = [];
+    },
   },
 };
 </script>

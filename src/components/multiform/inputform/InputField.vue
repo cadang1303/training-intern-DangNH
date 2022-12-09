@@ -1,16 +1,26 @@
 <template>
   <div class="form-group" :class="{ required: required }">
     <label class="control-label" :for="name">{{ inputLabel }}</label>
-    <input
-      type="text"
-      class="form-control"
-      :class="{ 'form-error': msg }"
-      :name="name"
-      :value="value"
-      :placeholder="placeholder"
-      @input="handleInput"
-    />
-    <slot></slot>
+    <div
+      :class="{
+        'form-salary': name === 'salary',
+        'form-salary-error': msg && name === 'salary',
+      }"
+    >
+      <input
+        type="text"
+        :class="{
+          'form-control': name != 'salary',
+          'form-error': msg && name != 'salary',
+          'form-salary-control': name === 'salary',
+        }"
+        :name="name"
+        :value="value"
+        :placeholder="placeholder"
+        @input="handleInput"
+      />
+      <slot></slot>
+    </div>
     <span v-if="msg" class="msg-text">
       {{ msg }}
     </span>
@@ -90,6 +100,35 @@ export default {
   background: #ffffff;
   border: 1px solid #dcdcdc;
   border-radius: 4px;
+}
+.form-salary {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8px;
+  width: 120px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+}
+.form-salary:hover {
+  border: 1px solid #1991d2;
+}
+.form-salary-error {
+  border: 1px solid #ed5d5d;
+}
+.form-salary-error:hover {
+  border: 1px solid #ed5d5d;
+}
+.form-salary-control {
+  border: none;
+  width: 78px;
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
 }
 .form-control:hover {
   border: 1px solid #1991d2;
