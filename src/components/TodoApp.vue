@@ -8,6 +8,7 @@
         v-model="keyword"
         placeholder="Nhập từ khóa tìm kiếm nhiệm vụ"
       />
+      <!-- <AutoComplete :items="todoList" /> -->
     </div>
     <div class="todo-list">
       <TodoColumn
@@ -58,6 +59,8 @@ export default {
   margin-bottom: 24px;
 }
 .todo-page .search-wrapper {
+  position: relative;
+  display: inline-block;
   margin-bottom: 32px;
 }
 .search-wrapper input {
