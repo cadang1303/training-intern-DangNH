@@ -100,15 +100,22 @@ export default {
   },
   watch: {
     profile: {
+      immediate: true,
       deep: true,
       handler() {
         this.msg.name = validateName(this.profile.name);
         this.msg.dob = validateDob(this.profile.dob);
         this.msg.desc = validateDesc(this.profile.desc);
 
-        if (this.msg.name || this.msg.dob || this.msg.desc) {
+        if (
+          this.msg.name.length ||
+          this.msg.dob.length ||
+          this.msg.desc.length
+        ) {
           this.error = true;
         } else this.error = false;
+
+        this.$store.dispatch("form/onSetStatusForm", this.error);
       },
     },
   },
@@ -130,7 +137,6 @@ export default {
       this.profile.images = data;
     },
     onChange() {
-      this.$store.dispatch("form/onSetStatusForm", this.error);
       if (!this.error) {
         this.$store.dispatch("form/onSetProfile", this.profile);
       }
@@ -192,5 +198,13 @@ export default {
 }
 .form-control:hover {
   border: 1px solid #1991d2;
+}
+div >>> .container {
+  width: 528px;
+}
+
+div >>> .main .dropzone-container {
+  width: 844px;
+  height: 192px;
 }
 </style>

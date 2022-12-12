@@ -7,6 +7,7 @@
             class="form-control"
             @change="(e) => (item.company = e.target.value)"
           >
+            <option disabled selected hidden>--Chọn công ty--</option>
             <option v-for="c in companies" :key="c.id" :value="c.name">
               {{ c.name }}
             </option>
@@ -16,10 +17,10 @@
             class="btn-remove"
             @click="onRemoveCompany(item)"
           />
-          <span v-if="item.msg.company" class="msg-text">
-            {{ item.msg.company }}
-          </span>
         </div>
+        <span v-if="item.msg.company" class="msg-text">
+          {{ item.msg.company }}
+        </span>
         <InputField
           :required="true"
           inputLabel="Vị trí từng làm"
@@ -30,12 +31,11 @@
         <DatepickerForm
           :required="true"
           inputLabel="Thời gian làm việc"
-          placeholder="0000/00/00"
           name="startDate"
           :value.sync="item.startDate"
           :msg="item.msg.jobDate"
         >
-          &nbsp; - &nbsp;
+          <span class="minus-symbol">&mdash;</span>
           <input
             type="date"
             :class="{ 'form-error': item.msg.jobDate }"
@@ -43,7 +43,6 @@
             v-model="item.endDate"
             name="endDate"
             placeholder="0000/00/00"
-            format="YYYY/MM/DD"
           />
         </DatepickerForm>
         <TextareaInput
@@ -58,7 +57,7 @@
         {{ msg.companyList }}
       </span>
       <ButtonComponent
-        :btnLabel="'+ Thêm công ty'"
+        btnLabel="+ Thêm công ty"
         class="btn-add"
         @onClick="onAddNewCompany"
       />
@@ -75,7 +74,7 @@ import {
   validateJobName,
   validateJobDesc,
   validateJobDate,
-  validateCompany,
+  // validateCompany,
 } from "@/utils/input";
 import TextareaInput from "./inputform/TextareaInput";
 import { companies } from "@/data/data";
@@ -95,8 +94,8 @@ export default {
           company: "",
           jobName: "",
           jobDesc: "",
-          startDate: "",
-          endDate: "",
+          startDate: null,
+          endDate: null,
           msg: {},
         },
       ],
@@ -107,14 +106,15 @@ export default {
   },
   watch: {
     companyList: {
+      immediate: true,
       deep: true,
       handler() {
         this.msg.companyList = validateCompanyList(this.companyList);
         for (let i = 0; i < this.companyList.length; i++) {
-          this.companyList[i].msg.company = validateCompany(
-            this.companyList[i],
-            this.companyList
-          );
+          // this.companyList[i].msg.company = validateCompany(
+          //   this.companyList[i],
+          //   this.companyList
+          // );
           this.companyList[i].msg.jobDate = validateJobDate(
             this.companyList[i],
             this.companyList
@@ -136,6 +136,7 @@ export default {
             this.error = true;
           } else this.error = false;
         }
+        this.$store.dispatch("form/onSetStatusForm", this.error);
       },
     },
   },
@@ -146,8 +147,8 @@ export default {
         company: "",
         jobName: "",
         jobDesc: "",
-        startDate: "",
-        endDate: "",
+        startDate: null,
+        endDate: null,
         msg: {},
       });
       this.$store.dispatch("form/onSetCompany", this.companyList);
@@ -156,15 +157,8 @@ export default {
       this.companyList.splice(this.companyList.indexOf(i), 1);
     },
     onChange() {
-      if (!this.msg.companyList) {
-        this.error = false;
-      } else this.error = true;
       if (!this.error) {
-        this.$store.dispatch("form/onSetStatusForm", this.error);
         this.$store.dispatch("form/onSetCompany", this.companyList);
-      } else {
-        this.error = true;
-        this.$store.dispatch("form/onSetStatusForm", this.error);
       }
     },
   },
@@ -259,6 +253,9 @@ export default {
   font-size: 12px;
   line-height: 20px;
   color: #ed5d5d;
+}
+.minus-symbol {
+  margin: 0 16px;
 }
 .btn-add {
   font-family: "Noto Sans";

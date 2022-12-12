@@ -33,6 +33,8 @@ export default {
   overflow-y: scroll;
   font-family: "Noto Sans JP";
   font-style: normal;
+  position: absolute;
+  width: 100%;
 }
 .options ul li {
   background-color: #f1f5f8;

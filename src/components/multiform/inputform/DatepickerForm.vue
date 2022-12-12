@@ -49,7 +49,6 @@ export default {
   methods: {
     handleInput(e) {
       this.$emit("update:value", e.target.value);
-      this.$emit("onInput");
     },
   },
 };
@@ -84,7 +83,7 @@ export default {
 }
 .form-control {
   padding: 8px 10px;
-  width: 122px;
+  width: 130px;
   background: #ffffff;
   border: 1px solid #dcdcdc;
   border-radius: 4px;

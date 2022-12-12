@@ -46,6 +46,7 @@ export default {
   },
   watch: {
     confirmForm: {
+      immediate: true,
       deep: true,
       handler() {
         this.msg.reason = validateReason(this.confirmForm.reason);
@@ -54,13 +55,13 @@ export default {
         if (this.msg.reason && this.msg.salary) {
           this.error = true;
         } else this.error = false;
+        this.$store.dispatch("form/onSetStatusForm", this.error);
       },
     },
   },
   methods: {
     onChange() {
-      this.$store.dispatch("form/onSetStatusForm", this.error);
-      if (this.error) {
+      if (!this.error) {
         this.$store.dispatch("form/onSetConfirm", this.confirmForm);
       }
     },

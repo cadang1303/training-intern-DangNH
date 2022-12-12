@@ -78,7 +78,7 @@ export default {
   flex-direction: column;
   padding: 0;
   margin: 0;
-  width: 528px;
+  width: 100%;
 }
 .autocomplete {
   display: flex;
