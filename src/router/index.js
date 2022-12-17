@@ -35,7 +35,7 @@ const routes = [
       {
         path: "/form",
         name: "Multiform",
-        component: () => import("../components/multiform/MultiForm.vue"),
+        component: () => import("../components/multiform/MultiformPage.vue"),
       },
     ],
   },

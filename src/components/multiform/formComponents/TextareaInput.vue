@@ -1,27 +1,21 @@
 <template>
   <div class="form-group" :class="{ required: required }">
     <label class="control-label" :for="name">{{ inputLabel }}</label>
+    <textarea
+      class="form-control-textarea"
+      :class="{ 'form-textarea-error': msg }"
+      :name="name"
+      v-model="valueInput"
+      @input="handleInput"
+    ></textarea>
     <div
-      :class="{
-        'form-salary': name === 'salary',
-        'form-salary-error': msg && name === 'salary',
-      }"
+      v-if="onCounter && !msg"
+      class="counter"
+      :class="{ 'counter-max': count === maxLength }"
     >
-      <input
-        type="text"
-        :class="{
-          'form-control': name != 'salary',
-          'form-error': msg && name != 'salary',
-          'form-salary-control': name === 'salary',
-        }"
-        :name="name"
-        :value="value"
-        :placeholder="placeholder"
-        @input="handleInput"
-      />
-      <slot></slot>
+      {{ count }}/{{ maxLength }}
     </div>
-    <span v-if="msg" class="msg-text">
+    <span v-else class="msg-text">
       {{ msg }}
     </span>
   </div>
@@ -38,30 +32,45 @@ export default {
       type: String,
       required: false,
     },
-    placeholder: {
-      type: String,
-      required: false,
-    },
     name: {
       type: String,
-      required: false,
-    },
-    value: {
       required: false,
     },
     maxLength: {
       type: Number,
       required: false,
     },
+    value: {
+      type: String,
+    },
     msg: {
       type: String,
       required: false,
     },
+    onCounter: {
+      type: Boolean,
+      default: () => false,
+    },
+  },
+  data() {
+    return {
+      count: 0,
+      valueInput: "",
+    };
+  },
+  watch: {
+    value: {
+      handler(value) {
+        this.valueInput = value;
+        this.count = this.valueInput.length;
+      },
+      deep: true,
+      immediate: true,
+    },
   },
   methods: {
-    handleInput(e) {
-      this.$emit("update:value", e.target.value);
-      this.$emit("onInput");
+    handleInput() {
+      this.$emit("onInput", this.valueInput);
     },
   },
 };
@@ -94,50 +103,34 @@ export default {
   height: 20px;
   background: #627d98;
 }
-.form-control {
+.form-control-textarea {
   padding: 8px 10px;
+  gap: 10px;
   width: 528px;
+  height: 152px;
   background: #ffffff;
   border: 1px solid #dcdcdc;
   border-radius: 4px;
+  resize: none;
 }
-.form-salary {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 8px;
-  width: 120px;
-  height: 40px;
-  background: #ffffff;
-  border: 1px solid #d8d8d8;
-  border-radius: 4px;
-}
-.form-salary:hover {
+.form-control-textarea:hover {
   border: 1px solid #1991d2;
 }
-.form-salary-error {
+.form-textarea-error {
   border: 1px solid #ed5d5d;
 }
-.form-salary-error:hover {
+.form-textarea-error:hover {
   border: 1px solid #ed5d5d;
 }
-.form-salary-control {
-  border: none;
-  width: 78px;
-  line-height: 20px;
-  font-size: 14px;
+.counter {
   font-weight: 400;
-  color: #333333;
+  font-size: 16px;
+  line-height: 24px;
+  color: #666666;
+  margin: 10px 0;
 }
-.form-control:hover {
-  border: 1px solid #1991d2;
-}
-.form-error {
-  border: 1px solid #ed5d5d;
-}
-.form-error:hover {
-  border: 1px solid #ed5d5d;
+.counter-max {
+  color: #ed5d5d;
 }
 .msg-text {
   font-style: normal;

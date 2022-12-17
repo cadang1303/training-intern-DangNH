@@ -1,14 +1,17 @@
 <template>
   <div class="container">
     <label for="autocomplete">
-      <div class="autocomplete" @click="visible = true">
+      <div
+        class="autocomplete"
+        @click="visible = true"
+      >
         <img src="@/assets/icon/interfaces/search.svg" />
         <SelectedItems :selectedItems="selectedArr" @onCancel="onCancel" />
         <input
           type="text"
           name="city"
           list="city"
-          id="city"
+          id="autocomplete"
           class="autocomplete-input"
           autocomplete="off"
           :placeholder="placeholder"

@@ -1,18 +1,15 @@
 <template>
   <div class="form-group" :class="{ required: required }">
     <label class="control-label" :for="name">{{ inputLabel }}</label>
-    <div class="form-date">
-      <input
-        type="date"
-        class="form-control"
-        :class="{ 'form-error': msg }"
-        :value="value"
-        :name="name"
-        :placeholder="placeholder"
-        @change="handleInput"
-      />
-      <slot></slot>
-    </div>
+    <input
+      type="text"
+      class="form-control"
+      :class="{ 'form-error': msg }"
+      :name="name"
+      v-model="valueInput"
+      :placeholder="placeholder"
+      @input="handleInput"
+    />
     <span v-if="msg" class="msg-text">
       {{ msg }}
     </span>
@@ -39,6 +36,10 @@ export default {
       required: false,
     },
     value: {
+      type: String,
+    },
+    maxLength: {
+      type: Number,
       required: false,
     },
     msg: {
@@ -46,9 +47,23 @@ export default {
       required: false,
     },
   },
+  data() {
+    return {
+      valueInput: "",
+    };
+  },
+  watch: {
+    value: {
+      handler(value) {
+        this.valueInput = value;
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   methods: {
-    handleInput(e) {
-      this.$emit("update:value", e.target.value);
+    handleInput() {
+      this.$emit("onInput", this.valueInput);
     },
   },
 };
@@ -83,14 +98,10 @@ export default {
 }
 .form-control {
   padding: 8px 10px;
-  width: 130px;
+  width: 528px;
   background: #ffffff;
   border: 1px solid #dcdcdc;
   border-radius: 4px;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  font-family: "Noto Sans JP";
 }
 .form-control:hover {
   border: 1px solid #1991d2;

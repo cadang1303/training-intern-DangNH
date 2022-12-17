@@ -1,76 +1,29 @@
-import axios from "axios";
-
 export default {
   namespaced: true,
   state: {
-    error: true,
-    cityList: [],
-    info: {
-      profile: {
-        name: "",
-        dob: "",
-        desc: "",
-        city: "",
-        positions: [],
-        images: [],
-      },
-      companyList: [
-        {
-          id: 1,
-          company: "",
-          jobName: "",
-          jobDesc: "",
-          startDate: "",
-          endDate: "",
-        },
-      ],
-      confirmForm: {
-        reason: "",
-        salary: 0,
-      },
-    },
+    firstForm: [],
+    secondForm: [],
+    thirdForm: [],
   },
   getters: {
-    cityList: (state) => state.cityList,
-    profile: (state) => state.info.profile,
-    companyList: (state) => state.info.companyList,
-    confirmForm: (state) => state.info.confirmForm,
-    info: (state) => state.info,
-    error: (state) => state.error,
+    getFirstForm: (state) => state.firstForm,
+    getSecondForm: (state) => state.secondForm,
+    getThirdForm: (state) => state.thirdForm,
   },
   mutations: {
-    SET_CITY_LIST(state, data) {
-      state.cityList = data;
-    },
-    SET_PROFILE(state, profile) {
-      state.info.profile = profile;
-    },
-    SET_COMPANY_LIST(state, list) {
-      state.info.companyList = list;
-    },
-    SET_CONFIRM_FORM(state, form) {
-      state.info.confirmForm = form;
-    },
-    SET_STATUS_FORM(state, boolean) {
-      state.error = boolean;
+    SAVE_FORM(state, payload) {
+      if (payload.step === 1) {
+        state.firstForm = payload.formData;
+      } else if (payload.step === 2) {
+        state.secondForm = payload.formData;
+      } else if (payload.step === 3) {
+        state.thirdForm = payload.formData;
+      }
     },
   },
   actions: {
-    async loadCityList({ commit }) {
-      const res = await axios.get("https://provinces.open-api.vn/api/p/");
-      commit("SET_CITY_LIST", res.data);
-    },
-    onSetStatusForm({ commit }, boolean) {
-      commit("SET_STATUS_FORM", boolean);
-    },
-    onSetProfile({ commit }, profile) {
-      commit("SET_PROFILE", profile);
-    },
-    onSetCompany({ commit }, list) {
-      commit("SET_COMPANY_LIST", list);
-    },
-    onSetConfirm({ commit }, form) {
-      commit("SET_CONFIRM_FORM", form);
+    saveForm({ commit }, data) {
+      commit("SAVE_FORM", data);
     },
   },
 };

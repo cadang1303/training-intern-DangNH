@@ -1,25 +1,17 @@
 <template>
   <div class="form-group" :class="{ required: required }">
     <label class="control-label" :for="name">{{ inputLabel }}</label>
-    <select
-      class="form-control"
-      :id="name"
-      :name="name"
-      :value="value"
-      :class="{ 'form-error': msg }"
-      @input="handleInput"
-    >
-      <option selected hidden>{{ placeholder }}</option>
-      <option v-for="item in list" :key="item.code" :value="item.name">
-        <span v-if="item.name.includes('Tỉnh')">
-          {{ item.name.replace("Tỉnh", "") }}
-        </span>
-        <span v-else-if="item.name.includes('Thành phố')">
-          {{ item.name.replace("Thành phố  ", "") }}</span
-        >
-        <span v-else>{{ item.name }}</span>
-      </option>
-    </select>
+    <div class="form-salary" :class="{ 'form-salary-error': msg }">
+      <input
+        class="form-salary-control"
+        type="text"
+        :name="name"
+        v-model="valueInput"
+        :placeholder="placeholder"
+        @input="handleInput"
+      />
+      <span class="currency">{{ currency }}</span>
+    </div>
     <span v-if="msg" class="msg-text">
       {{ msg }}
     </span>
@@ -47,10 +39,13 @@ export default {
     },
     value: {
       type: String,
+    },
+    maxLength: {
+      type: Number,
       required: false,
     },
-    list: {
-      type: Array,
+    currency: {
+      type: String,
       required: false,
     },
     msg: {
@@ -58,9 +53,23 @@ export default {
       required: false,
     },
   },
+  data() {
+    return {
+      valueInput: "",
+    };
+  },
+  watch: {
+    value: {
+      handler(value) {
+        this.valueInput = value;
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   methods: {
-    handleInput(e) {
-      this.$emit("update:value", e.target.value);
+    handleInput() {
+      this.$emit("onInput", this.valueInput);
     },
   },
 };
@@ -93,24 +102,48 @@ export default {
   height: 20px;
   background: #627d98;
 }
-.form-control {
-  padding: 8px 10px;
-  width: 528px;
+.form-salary {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8px;
+  width: 124px;
+  height: 40px;
   background: #ffffff;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #d8d8d8;
   border-radius: 4px;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
 }
-.form-control:hover {
+.form-salary:hover {
   border: 1px solid #1991d2;
 }
-.form-error {
+.form-salary-error {
   border: 1px solid #ed5d5d;
 }
-.form-error:hover {
+.form-salary-error:hover {
   border: 1px solid #ed5d5d;
+}
+.form-salary-control {
+  border: none;
+  width: 78px;
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333333;
+}
+.currency {
+  font-family: "Noto Sans";
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #333333;
+}
+.msg-text {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  color: #ed5d5d;
 }
 </style>

@@ -1,21 +1,19 @@
 <template>
   <div class="form-group" :class="{ required: required }">
     <label class="control-label" :for="name">{{ inputLabel }}</label>
-    <textarea
-      class="form-control-textarea"
-      :class="{ 'form-textarea-error': msg }"
-      :name="name"
-      :value="value"
-      @input="handleInput"
-    ></textarea>
-    <div
-      v-if="onCounter && !msg"
-      class="counter"
-      :class="{ 'counter-max': count === maxLength }"
-    >
-      {{ count }}/{{ maxLength }}
+    <div class="form-date">
+      <input
+        type="date"
+        class="form-control"
+        :class="{ 'form-error': msg }"
+        v-model="valueInput"
+        :name="name"
+        :placeholder="placeholder"
+        @change="handleInput"
+      />
+      <slot></slot>
     </div>
-    <span v-else class="msg-text">
+    <span v-if="msg" class="msg-text">
       {{ msg }}
     </span>
   </div>
@@ -32,41 +30,39 @@ export default {
       type: String,
       required: false,
     },
-    name: {
+    placeholder: {
       type: String,
       required: false,
     },
     value: {
       type: String,
-      required: false,
     },
-    maxLength: {
-      type: Number,
+    name: {
+      type: String,
       required: false,
     },
     msg: {
       type: String,
       required: false,
     },
-    onCounter: {
-      type: Boolean,
-      default: () => false,
-    },
   },
   data() {
     return {
-      count: 0,
+      valueInput: "",
     };
   },
   watch: {
-    value(value) {
-      this.count = value.length;
+    value: {
+      handler(value) {
+        this.valueInput = value;
+      },
+      deep: true,
+      immediate: true,
     },
   },
   methods: {
-    handleInput(e) {
-      this.$emit("update:value", e.target.value);
-      this.$emit("onInput");
+    handleInput() {
+      this.$emit("onInput", this.valueInput);
     },
   },
 };
@@ -99,34 +95,25 @@ export default {
   height: 20px;
   background: #627d98;
 }
-.form-control-textarea {
+.form-control {
   padding: 8px 10px;
-  gap: 10px;
-  width: 528px;
-  height: 152px;
+  width: 130px;
   background: #ffffff;
   border: 1px solid #dcdcdc;
   border-radius: 4px;
-  resize: none;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  font-family: "Noto Sans JP";
 }
-.form-control-textarea:hover {
+.form-control:hover {
   border: 1px solid #1991d2;
 }
-.form-textarea-error {
+.form-error {
   border: 1px solid #ed5d5d;
 }
-.form-textarea-error:hover {
+.form-error:hover {
   border: 1px solid #ed5d5d;
-}
-.counter {
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #666666;
-  margin: 10px 0;
-}
-.counter-max {
-  color: #ed5d5d;
 }
 .msg-text {
   font-style: normal;
