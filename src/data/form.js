@@ -140,7 +140,7 @@ export const multiForm = [
     data: secondForm,
   },
   {
-    id: 1,
+    id: 3,
     step: 3,
     data: thirdForm,
   },

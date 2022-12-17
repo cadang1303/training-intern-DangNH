@@ -64,7 +64,7 @@ export default {
       return this.list.filter((i) => {
         return (
           i.name.toLowerCase().includes(this.keyword.toLowerCase()) &&
-          this.keyword.length > 0 && !i.isChosen
+          this.keyword.length > 0 && !i.isSelected
         );
       });
     },

@@ -152,7 +152,6 @@ export default {
       this.formData.forEach((i) => {
         if (i.name === "job") {
           i.value.splice(i.value.indexOf(option), 1);
-
           i.list.map((opt) => {
             if (opt.name === option.name) {
               opt.isSelected = false;
@@ -161,9 +160,12 @@ export default {
         }
       });
     },
+    toFormJSON() {},
     submitForm() {
       this.saveForm({ formData: this.formData, step: this.currentStep });
-      this.currentStep++;
+      if (this.isLastForm) {
+        this.$router.push("/");
+      } else this.currentStep++;
     },
     changeForm(step) {
       this.currentStep = step;
