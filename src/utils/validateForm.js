@@ -85,7 +85,7 @@ export function validateSecondForm(formData) {
       let jobDate2 = formData[j].fields.find((item) => item.name === "jobDate");
 
       let nextStartDate = new Date(jobDate2.value.from).getTime();
-      if (i != j) {
+      if (i < j) {
         if (nextStartDate < endDate || nextStartDate < startDate) {
           result = false;
           jobDate2.msg = `Thời gian làm việc không phù hợp.`;

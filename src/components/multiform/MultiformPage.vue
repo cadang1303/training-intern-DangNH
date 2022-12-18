@@ -160,15 +160,44 @@ export default {
         }
       });
     },
-    toFormJSON() {},
+    toFormJSON() {
+      let form = {};
+      this.firstForm.forEach((item) => {
+        form[item.name] = item.value;
+      });
+
+      form["companies"] = {};
+      let data = [];
+      let value = {};
+
+      this.secondForm.forEach((item) => {
+        item.fields.forEach((c) => {
+          value[c.name] = c.value;
+        });
+        data.push(value);
+      });
+
+      for (let i = 0; i < data.length; i++) {
+        form["companies"][i] = data[i];
+      }
+
+      this.thirdForm.forEach((item) => {
+        form[item.name] = item.value;
+      });
+
+      return form;
+    },
     submitForm() {
       this.saveForm({ formData: this.formData, step: this.currentStep });
       if (this.isLastForm) {
+        console.log(this.toFormJSON());
         this.$router.push("/");
       } else this.currentStep++;
     },
     changeForm(step) {
-      this.currentStep = step;
+      if (!this.isLastForm) {
+        this.currentStep = step;
+      }
     },
   },
 };
