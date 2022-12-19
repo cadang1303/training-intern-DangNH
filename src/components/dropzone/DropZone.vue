@@ -28,7 +28,7 @@
     <span v-if="msg.length" :class="{ error: msg.error, success: msg.success }">
       {{ msg.error }} {{ msg.success }}
     </span>
-    <div v-if="files.length" class="preview-container">
+    <div v-if="filesInput.length" class="preview-container">
       <FileItem
         v-for="(file, index) in filesInput"
         :key="file.name"
@@ -106,12 +106,8 @@ export default {
           success: "",
         },
       ],
+      files: [],
     };
-  },
-  computed: {
-    files() {
-      return this.filesInput;
-    },
   },
   methods: {
     onChange() {
