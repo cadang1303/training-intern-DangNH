@@ -74,10 +74,6 @@ export default {
       type: Number,
       required: false,
     },
-    filesInput: {
-      type: Array,
-      required: false,
-    },
     maxFiles: {
       type: Number,
       required: false,
@@ -87,6 +83,10 @@ export default {
       required: false,
     },
     validExt: {
+      type: Array,
+      required: false,
+    },
+    filesInput: {
       type: Array,
       required: false,
     },
