@@ -106,8 +106,12 @@ export default {
           success: "",
         },
       ],
-      files: [],
     };
+  },
+  computed: {
+    files() {
+      return this.filesInput;
+    },
   },
   methods: {
     onChange() {
@@ -139,8 +143,8 @@ export default {
               file.extType = getFileType(file.name);
             });
           }
+          this.$emit("onFileInput", this.files);
         });
-        this.$emit("onFileInput", this.files);
       }
     },
     dragover(e) {

@@ -64,7 +64,8 @@ export default {
       return this.list.filter((i) => {
         return (
           i.name.toLowerCase().includes(this.keyword.toLowerCase()) &&
-          this.keyword.length > 0 && !i.isSelected
+          this.keyword.length > 0 &&
+          !i.isSelected
         );
       });
     },
@@ -75,6 +76,7 @@ export default {
     },
     onSelectDropdown(i) {
       this.$emit("onSelectDropdown", i);
+      this.keyword = "";
     },
     onRemoveDropdown(i) {
       this.$emit("onRemoveDropdown", i);

@@ -38,7 +38,7 @@ export default {
       required: false,
     },
     value: {
-      type: String,
+      required: false,
     },
     maxLength: {
       type: Number,

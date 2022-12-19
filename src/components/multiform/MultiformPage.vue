@@ -114,7 +114,7 @@ export default {
     onInputImg(data) {
       this.formData.forEach((i) => {
         if (i.name === "img") {
-          i.value = i.value.concat(data);
+          i.value = data;
         }
       });
     },
@@ -126,7 +126,11 @@ export default {
       });
     },
     onInput(value, index) {
-      this.formData[index].value = value;
+      if (this.formData[index].name === "salary") {
+        this.formData[index].value = +value;
+      } else {
+        this.formData[index].value = value;
+      }
       this.formData[index].msg = "";
     },
     onChangeCompanyForm(value, indexChild, index) {
@@ -164,15 +168,14 @@ export default {
       let form = {};
       this.firstForm.forEach((item) => {
         let data = {};
-        if(item.name != "img" && item.name != "jobs") {
+        if (item.name != "img" && item.name != "jobs") {
           form[item.name] = item.value;
         } else {
           for (let i = 0; i < item.value.length; i++) {
             data[i] = item.value[i];
           }
-          form[item.name] = data
+          form[item.name] = data;
         }
-
       });
 
       form["companies"] = {};
@@ -204,7 +207,7 @@ export default {
       } else this.currentStep++;
     },
     changeForm(step) {
-      if (!this.isLastForm) {
+      if (step < this.multiForm.length) {
         this.currentStep = step;
       }
     },

@@ -1,10 +1,7 @@
 <template>
   <div class="container">
     <label for="autocomplete">
-      <div
-        class="autocomplete"
-        @click="visible = true"
-      >
+      <div class="autocomplete" @click="visible = true">
         <img src="@/assets/icon/interfaces/search.svg" />
         <SelectedItems :selectedItems="selectedArr" @onCancel="onCancel" />
         <input
@@ -13,6 +10,7 @@
           list="city"
           id="autocomplete"
           class="autocomplete-input"
+          v-model="keyword"
           autocomplete="off"
           :placeholder="placeholder"
           @input="handleInput"
@@ -59,8 +57,7 @@ export default {
       this.keyword = "";
       this.visible = false;
     },
-    handleInput(e) {
-      this.keyword = e.target.value;
+    handleInput() {
       this.$emit("onInput", this.keyword);
     },
   },

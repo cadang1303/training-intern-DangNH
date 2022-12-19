@@ -48,7 +48,7 @@ export function validateSecondForm(formData) {
     let company = formData[i].fields.find((item) => item.name === "company");
     let jobName = formData[i].fields.find((item) => item.name === "jobName");
     let jobDate1 = formData[i].fields.find((item) => item.name === "jobDate");
-    let jobDesc = formData[i].fields.find((item) => item.name === "jobName");
+    let jobDesc = formData[i].fields.find((item) => item.name === "jobDesc");
     let startDate = new Date(jobDate1.value.from).getTime();
     let endDate = new Date(jobDate1.value.to).getTime();
 
@@ -85,8 +85,12 @@ export function validateSecondForm(formData) {
       let jobDate2 = formData[j].fields.find((item) => item.name === "jobDate");
 
       let nextStartDate = new Date(jobDate2.value.from).getTime();
+      let nextEndDate = new Date(jobDate2.value.to).getTime();
       if (i < j) {
-        if (nextStartDate < endDate || nextStartDate < startDate) {
+        if (
+          (nextStartDate < endDate && nextStartDate > startDate) ||
+          (nextEndDate < endDate && nextEndDate > startDate)
+        ) {
           result = false;
           jobDate1.msg = `Thời gian làm việc không được phép trùng lặp.`;
           jobDate2.msg = `Thời gian làm việc không được phép trùng lặp.`;
@@ -114,7 +118,7 @@ export function validateThirdForm(formData) {
     reason.msg = `${reason.label} có độ dài tối đa là ${reason.maxLength} ký tự.`;
   }
 
-  if (!salary.value) {
+  if (!salary.value || salary.value <= 0) {
     result = false;
     salary.msg = `${salary.label} là bắt buộc !`;
   } else if (salary.value.length > salary.maxLength) {

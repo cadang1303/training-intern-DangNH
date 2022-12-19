@@ -4,6 +4,7 @@ import Vuex from "vuex";
 import form from "./modules/form";
 import todo from "./modules/todo";
 import city from "./modules/city";
+import notifications from "./modules/notifications";
 
 Vue.use(Vuex);
 
@@ -16,5 +17,6 @@ export default new Vuex.Store({
     todo,
     city,
     form,
+    notifications,
   },
 });

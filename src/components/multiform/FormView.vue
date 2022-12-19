@@ -29,7 +29,7 @@
           :btnLabel="getSubmitBtn"
         />
         <ButtonComponent
-          v-if="!isFirstForm && !isLastForm"
+          v-if="!isFirstForm"
           btnLabel="Quay lại"
           class="btn btn-back"
           @onClick="goBack"

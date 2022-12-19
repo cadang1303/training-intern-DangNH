@@ -22,8 +22,18 @@ export default {
     },
   },
   actions: {
-    saveForm({ commit }, data) {
+    saveForm({ commit, dispatch }, data) {
       commit("SAVE_FORM", data);
+      if (data.step === 3) {
+        dispatch(
+          "notifications/addNotification",
+          {
+            type: "success",
+            message: "Gửi lên thành công!",
+          },
+          { root: true }
+        );
+      }
     },
   },
 };

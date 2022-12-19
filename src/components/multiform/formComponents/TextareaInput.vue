@@ -9,13 +9,13 @@
       @input="handleInput"
     ></textarea>
     <div
-      v-if="onCounter && !msg"
+      v-if="onCounter"
       class="counter"
-      :class="{ 'counter-max': count === maxLength }"
+      :class="{ 'counter-max': count >= maxLength }"
     >
       {{ count }}/{{ maxLength }}
     </div>
-    <span v-else class="msg-text">
+    <span v-if="msg" class="msg-text">
       {{ msg }}
     </span>
   </div>
