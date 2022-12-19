@@ -88,7 +88,8 @@ export function validateSecondForm(formData) {
       if (i < j) {
         if (nextStartDate < endDate || nextStartDate < startDate) {
           result = false;
-          jobDate2.msg = `Thời gian làm việc không phù hợp.`;
+          jobDate1.msg = `Thời gian làm việc không được phép trùng lặp.`;
+          jobDate2.msg = `Thời gian làm việc không được phép trùng lặp.`;
         }
       }
     }

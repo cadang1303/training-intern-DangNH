@@ -30,7 +30,7 @@
     </span>
     <div v-if="files.length" class="preview-container">
       <FileItem
-        v-for="(file, index) in files"
+        v-for="(file, index) in filesInput"
         :key="file.name"
         :file="file"
         @onRemove="onRemove(index)"
@@ -74,6 +74,10 @@ export default {
       type: Number,
       required: false,
     },
+    filesInput: {
+      type: Array,
+      required: false,
+    },
     maxFiles: {
       type: Number,
       required: false,
@@ -102,8 +106,12 @@ export default {
           success: "",
         },
       ],
-      files: [],
     };
+  },
+  computed: {
+    files() {
+      return this.filesInput;
+    },
   },
   methods: {
     onChange() {

@@ -5,6 +5,7 @@
       :placeholder="placeholder"
       :triggerText="triggerText"
       :dragText="dragText"
+      :filesInput="filesInput"
       :minFiles="minFiles"
       :maxFiles="maxFiles"
       :maxSizeMB="maxSizeMB"
@@ -44,6 +45,10 @@ export default {
     },
     dragText: {
       type: String,
+      required: false,
+    },
+    filesInput: {
+      type: Array,
       required: false,
     },
     minFiles: {

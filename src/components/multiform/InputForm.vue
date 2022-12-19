@@ -72,6 +72,7 @@
       :placeholder="item.placeholder"
       :triggerText="item.triggerText"
       :dragText="item.dragText"
+      :filesInput="item.value"
       :minFiles="item.minFiles"
       :maxFiles="item.maxFiles"
       :validExt="item.validExt"
