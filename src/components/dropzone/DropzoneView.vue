@@ -3,6 +3,8 @@
     <DropZone
       @onFileInput="onFileInput"
       @uploadFiles="uploadFiles"
+      @onRemoveFiles="onRemoveFile"
+      :filesInput="files"
       :maxSizeMB="MAX_SIZE_MB"
       :minFiles="MIN_FILES"
       :maxFiles="MAX_FILES"
