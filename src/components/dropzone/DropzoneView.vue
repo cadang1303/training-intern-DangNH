@@ -3,6 +3,7 @@
     <DropZone
       @onFileInput="onFileInput"
       @uploadFiles="uploadFiles"
+      @onRemoveFiles="onRemoveFile"
       :filesInput="files"
       :maxSizeMB="MAX_SIZE_MB"
       :minFiles="MIN_FILES"
@@ -34,6 +35,9 @@ export default {
   methods: {
     onFileInput(data) {
       this.files = data;
+    },
+    onRemoveFile(index) {
+      this.files.splice(index, 1);
     },
     async uploadFiles() {
       try {

@@ -30,10 +30,10 @@
     </span>
     <div v-if="filesInput.length" class="preview-container">
       <FileItem
-        v-for="file in filesInput"
+        v-for="(file, index) in filesInput"
         :key="file.name"
         :file="file"
-        @onRemove="onRemove"
+        @onRemove="onRemove(index)"
       />
     </div>
     <ButtonComponent
@@ -157,7 +157,8 @@ export default {
       this.isDragging = false;
     },
     onRemove(i) {
-      this.files.splice(this.files.indexOf(i), 1);
+      this.files.splice(i, 1);
+      this.$emit("onRemoveFiles", i);
     },
     uploadFiles() {
       this.$emit("uploadFiles");
