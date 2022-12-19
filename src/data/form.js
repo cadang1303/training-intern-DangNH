@@ -76,7 +76,7 @@ const firstForm = [
     list: JOB_LIST,
     value: [],
     textSmall: "Có thể chọn nhiều vị trí mà bạn muốn làm việc",
-    name: "job",
+    name: "jobs",
   },
   {
     label: "Mô tả về bản thân",

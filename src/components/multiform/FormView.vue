@@ -126,12 +126,11 @@ export default {
       if (!this.isValid) {
         setTimeout(() => {
           let el = document.getElementsByClassName("msg-text")[0].offsetTop;
-          console.log(el);
           window.scrollTo({
             top: el - 300,
             behavior: "smooth",
           });
-        }, 300);
+        }, 200);
       } else {
         this.$emit("submitForm", this.formData);
         this.$emit("changeForm", this.currentStep + 1);

@@ -135,7 +135,7 @@ export default {
     },
     onSelectJob(option) {
       this.formData.forEach((i) => {
-        if (i.name === "job") {
+        if (i.name === "jobs") {
           let value = i.value.filter((c) => c.name === option.name);
           if (value.length <= 0) {
             i.value.push(option);
@@ -150,7 +150,7 @@ export default {
     },
     onRemoveJob(option) {
       this.formData.forEach((i) => {
-        if (i.name === "job") {
+        if (i.name === "jobs") {
           i.value.splice(i.value.indexOf(option), 1);
           i.list.map((opt) => {
             if (opt.name === option.name) {
@@ -163,7 +163,16 @@ export default {
     toFormJSON() {
       let form = {};
       this.firstForm.forEach((item) => {
-        form[item.name] = item.value;
+        let data = {};
+        if(item.name != "img" && item.name != "jobs") {
+          form[item.name] = item.value;
+        } else {
+          for (let i = 0; i < item.value.length; i++) {
+            data[i] = item.value[i];
+          }
+          form[item.name] = data
+        }
+
       });
 
       form["companies"] = {};
