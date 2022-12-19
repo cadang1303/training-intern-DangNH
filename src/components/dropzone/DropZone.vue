@@ -28,9 +28,9 @@
     <span v-if="msg.length" :class="{ error: msg.error, success: msg.success }">
       {{ msg.error }} {{ msg.success }}
     </span>
-    <div v-if="files.length" class="preview-container">
+    <div v-if="filesInput.length" class="preview-container">
       <FileItem
-        v-for="file in files"
+        v-for="file in filesInput"
         :key="file.name"
         :file="file"
         @onRemove="onRemove"
@@ -83,6 +83,10 @@ export default {
       required: false,
     },
     validExt: {
+      type: Array,
+      required: false,
+    },
+    filesInput: {
       type: Array,
       required: false,
     },
