@@ -20,12 +20,8 @@ export function getFileType(name) {
 }
 
 export function validateExtension(name, validExt) {
-  let result = false;
   let ext = name.split(".").pop().toLowerCase();
-  if (validExt.includes(ext)) {
-    result = true;
-  }
-  return result;
+  return validExt.includes(ext);
 }
 
 export function validateNumberOfFiles(length, maxFiles) {
@@ -39,7 +35,7 @@ export function validateFileSize(file, maxSize) {
 export function validateDuplicate(file, fileList) {
   let result = false;
   let list = fileList.filter((f) => {
-    return !f.name.includes(file.name);
+    return f.name != file.name;
   });
   if (list.length === fileList.length) {
     result = false;
