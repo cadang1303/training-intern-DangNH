@@ -1,14 +1,14 @@
 <template>
-  <div class="stepper-container">
-    <ul class="progressbar">
-      <li
-        v-for="step in steps"
-        :key="step.id"
-        :class="{ active: step.id <= currentStep }"
-      >
-        <p class="stepper-label">{{ step.label }}</p>
-      </li>
-    </ul>
+  <div class="stepper-wrapper">
+    <div
+      v-for="step in steps"
+      :key="step.id"
+      class="stepper-item"
+      :class="{ active: step.id <= currentStep }"
+    >
+      <div class="step-counter">{{ step.id }}</div>
+      <div class="step-name">{{ step.label }}</div>
+    </div>
   </div>
 </template>
 
@@ -27,63 +27,73 @@ export default {
 </script>
 
 <style scoped>
-.stepper-container {
-  width: 100%;
+.stepper-wrapper {
+  width: 800px;
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 30px;
+  margin-top: 20px;
 }
-.stepper-label {
-  color: #333333;
+.stepper-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+.stepper-item::before {
+  position: absolute;
+  content: "";
+  border-bottom: 2px solid #dbdbdb;
+  width: 100%;
+  top: 20px;
+  left: -50%;
+  z-index: 2;
+}
+.stepper-item::after {
+  position: absolute;
+  content: "";
+  border-bottom: 2px solid #dbdbdb;
+  width: 100%;
+  top: 20px;
+  left: 50%;
+  z-index: 2;
+}
+.stepper-item .step-counter {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ccc;
+  margin-bottom: 6px;
+}
+.stepper-item.active .step-counter {
+  background-color: #617d98;
+}
+.stepper-item:first-child::before {
+  content: none;
+}
+.stepper-item:last-child::after {
+  content: none;
+}
+.step-name {
+  font-family: "Noto Sans JP";
+  font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
 }
-.progressbar {
-  counter-reset: step;
-  margin: 10px;
-}
-.progressbar li {
-  list-style-type: none;
-  float: left;
-  width: 13%;
-  position: relative;
-  text-align: center;
+.step-counter {
+  font-family: "Noto Sans JP";
+  font-style: normal;
   font-weight: 700;
   font-size: 14px;
-}
-.progressbar li:before {
-  content: counter(step);
-  counter-increment: step;
-  height: 32px;
-  width: 32px;
-  line-height: 32px;
-  border: 1px solid #dbdbdb;
-  display: block;
-  text-align: center;
-  margin: 0 auto 10px auto;
-  border-radius: 98px;
-  background-color: #dbdbdb;
+  line-height: 20px;
   color: #ffffff;
-}
-.progressbar li:after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background-color: #dbdbdb;
-  top: 15px;
-  left: -50%;
-  z-index: -1;
-}
-.progressbar li:first-child:after {
-  content: none;
-}
-.progressbar li.active {
-  color: #ffffff;
-}
-.progressbar li.active:before {
-  background-color: #617d98;
-}
-.progressbar li.active + li:after {
-  background-color: #dbdbdb;
 }
 </style>

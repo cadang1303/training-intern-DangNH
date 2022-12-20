@@ -33,8 +33,8 @@ export default {
     };
   },
   methods: {
-    onRemoveFile(index) {
-      this.files.splice(index, 1);
+    onRemoveFile(file) {
+      this.files = this.files.filter((f) => f.name != file.name);
     },
     onFileInput(data) {
       this.files = data;

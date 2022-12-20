@@ -48,8 +48,8 @@ export default {
     };
   },
   methods: {
-    onRemove() {
-      this.$emit("onRemove");
+    onRemove(file) {
+      this.$emit("onRemove", file);
     },
   },
 };

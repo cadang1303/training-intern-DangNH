@@ -1,6 +1,5 @@
 <template>
-  <div class="form-group" :class="{ required: required }">
-    <label class="control-label" :for="name">{{ inputLabel }}</label>
+  <div>
     <div class="form-date">
       <input
         type="date"
@@ -22,14 +21,6 @@
 <script>
 export default {
   props: {
-    required: {
-      type: Boolean,
-      default: () => false,
-    },
-    inputLabel: {
-      type: String,
-      required: false,
-    },
     placeholder: {
       type: String,
       required: false,

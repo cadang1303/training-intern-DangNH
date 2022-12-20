@@ -90,8 +90,8 @@ export default {
     onInputImg(value) {
       this.$emit("onInputImg", value);
     },
-    onRemoveImage(index) {
-      this.$emit("onRemoveImage", index);
+    onRemoveImage(file) {
+      this.$emit("onRemoveImage", file);
     },
     onSelectJob(item) {
       this.$emit("onSelectJob", item);

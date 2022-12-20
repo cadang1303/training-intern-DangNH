@@ -1,13 +1,12 @@
 import { JOB_LIST, COMPANY_LIST, CITY_LIST } from "./data";
 
 export const formSecondStep = {
-  type: "company-item",
+  type: "companies",
   fields: [
     {
       label: "",
       type: "select-company",
       placeholder: "--Chọn công ty--",
-      required: true,
       value: "",
       name: "company",
       list: COMPANY_LIST,

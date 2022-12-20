@@ -161,6 +161,7 @@ export default {
   width: 32px;
   height: 32px;
   margin: auto;
+  cursor: pointer;
 }
 .msg-text {
   font-style: normal;

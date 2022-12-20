@@ -1,6 +1,5 @@
 <template>
-  <div class="form-group" :class="{ required: required }">
-    <label class="control-label" :for="name">{{ inputLabel }}</label>
+  <div>
     <textarea
       class="form-control-textarea"
       :class="{ 'form-textarea-error': msg }"
@@ -24,14 +23,6 @@
 <script>
 export default {
   props: {
-    required: {
-      type: Boolean,
-      default: () => false,
-    },
-    inputLabel: {
-      type: String,
-      required: false,
-    },
     name: {
       type: String,
       required: false,

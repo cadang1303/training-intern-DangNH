@@ -1,7 +1,5 @@
 <template>
-  <div class="form-group" :class="{ required: required }">
-    <label class="control-label" :for="name">{{ inputLabel }}</label>
-    <small>{{ textSmall }}</small>
+  <div>
     <AutoComplete
       :items="filteredList"
       :selectedArr="chosenList"
@@ -21,14 +19,6 @@ import AutoComplete from "@/components/autocomplete/AutoComplete.vue";
 
 export default {
   props: {
-    required: {
-      type: Boolean,
-      default: () => false,
-    },
-    inputLabel: {
-      type: String,
-      required: false,
-    },
     placeholder: {
       type: String,
       required: false,

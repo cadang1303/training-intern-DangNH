@@ -72,8 +72,8 @@ export default {
     onFileInput(data) {
       this.$emit("onInputImg", data);
     },
-    onRemoveImages(index) {
-      this.$emit("onRemoveImages", index);
+    onRemoveImages(file) {
+      this.$emit("onRemoveImages", file);
     },
   },
 };

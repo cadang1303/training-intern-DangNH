@@ -35,6 +35,8 @@ export default {
       currentStep: 1,
       STEPS,
       multiForm,
+      formData: [],
+      form: {},
     };
   },
   computed: {
@@ -55,21 +57,24 @@ export default {
     isLastForm() {
       return this.currentStep === this.multiForm.length;
     },
-    formData() {
-      const rs = this.multiForm.filter(
-        (item) => item.step === this.currentStep
-      )[0];
-      return rs?.data;
+    getFormData() {
+      return JSON.parse(
+        JSON.stringify(
+          this.multiForm.find((item) => item.step === this.currentStep).data
+        )
+      );
     },
   },
   mounted() {
     if (this.isFirstForm && this.firstForm.length > 0) {
       this.mutationForm(this.multiForm, this.firstForm, this.currentStep);
     }
+    this.formData = this.getFormData;
   },
   watch: {
     currentStep: {
       handler(value) {
+        this.formData = this.getFormData;
         if (this.isFirstForm && this.firstForm.length > 0) {
           this.mutationForm(this.multiForm, this.firstForm, value);
         } else if (this.isSecondForm && this.secondForm.length > 0) {
@@ -93,11 +98,11 @@ export default {
       saveForm: "form/saveForm",
     }),
     mutationForm(multiForm, formData, stepNum) {
-      let fileValue = formData.filter((item) => item.name === "img")[0].value;
+      let fileValue = formData.find((item) => item.name === "img").value;
       multiForm.forEach((item) => {
         if (item.step === stepNum) {
           item.data = JSON.parse(JSON.stringify(formData));
-          item.data.map((child) => {
+          item.data.find((child) => {
             if (child.name === "img") {
               child.value = [...fileValue];
             }
@@ -118,10 +123,10 @@ export default {
         }
       });
     },
-    onRemoveImage(index) {
+    onRemoveImage(file) {
       this.formData.forEach((i) => {
         if (i.name === "img") {
-          i.value.splice(index, 1);
+          i.value = i.value.filter((f) => f.name != file.name);
         }
       });
     },
@@ -155,7 +160,8 @@ export default {
     onRemoveJob(option) {
       this.formData.forEach((i) => {
         if (i.name === "jobs") {
-          i.value.splice(i.value.indexOf(option), 1);
+          // i.value.splice(i.value.indexOf(option), 1);
+          i.value = i.value.filter((c) => c.name != option.name);
           i.list.map((opt) => {
             if (opt.name === option.name) {
               opt.isSelected = false;
@@ -164,45 +170,33 @@ export default {
         }
       });
     },
-    toFormJSON() {
-      let form = {};
-      this.firstForm.forEach((item) => {
-        let data = {};
-        if (item.name != "img" && item.name != "jobs") {
-          form[item.name] = item.value;
+    toFormJSON(formData) {
+      let obj = {};
+      let data = {};
+      formData.forEach((i) => {
+        if (i.fields) {
+          this.form[i.type] = {};
+          i.fields.forEach((c) => {
+            obj[c.name] = c.value;
+          });
+          this.form[i.type] = obj;
+        } else if (Array.isArray(i.value)) {
+          if (i.value.length > 0) {
+            for (let j = 0; j < i.value.length; j++) {
+              data[j] = i.value[j];
+            }
+            this.form[i.name] = data;
+          } else this.form[i.name] = {};
         } else {
-          for (let i = 0; i < item.value.length; i++) {
-            data[i] = item.value[i];
-          }
-          form[item.name] = data;
+          this.form[i.name] = i.value;
         }
       });
-
-      form["companies"] = {};
-      let data = [];
-      let value = {};
-
-      this.secondForm.forEach((item) => {
-        item.fields.forEach((c) => {
-          value[c.name] = c.value;
-        });
-        data.push(value);
-      });
-
-      for (let i = 0; i < data.length; i++) {
-        form["companies"][i] = data[i];
-      }
-
-      this.thirdForm.forEach((item) => {
-        form[item.name] = item.value;
-      });
-
-      return form;
     },
     submitForm() {
       this.saveForm({ formData: this.formData, step: this.currentStep });
+      this.toFormJSON(this.formData);
       if (this.isLastForm) {
-        console.log(this.toFormJSON());
+        console.log(this.form);
         this.$router.push("/");
       } else this.currentStep++;
     },

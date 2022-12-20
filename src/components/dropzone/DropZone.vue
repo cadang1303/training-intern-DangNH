@@ -13,7 +13,7 @@
         id="fileInput"
         class="hidden-input"
         ref="file"
-        @change="onChange"
+        @input="onChange"
         multiple
       />
       <label for="fileInput" class="file-label">
@@ -25,15 +25,18 @@
         </div>
       </label>
     </div>
-    <span v-if="msg.length" :class="{ error: msg.error, success: msg.success }">
+    <span
+      v-if="!msg.error || !msg.success"
+      :class="{ error: msg.error, success: msg.success }"
+    >
       {{ msg.error }} {{ msg.success }}
     </span>
     <div v-if="filesInput.length" class="preview-container">
       <FileItem
-        v-for="(file, index) in filesInput"
+        v-for="file in filesInput"
         :key="file.name"
         :file="file"
-        @onRemove="onRemove(index)"
+        @onRemove="onRemove(file)"
       />
     </div>
     <ButtonComponent
@@ -98,19 +101,20 @@ export default {
   data() {
     return {
       isDragging: false,
-      msg: [
-        {
-          error: "",
-        },
-        {
-          success: "",
-        },
-      ],
+      msg: {
+        error: "",
+        success: "",
+      },
     };
   },
   computed: {
-    files() {
-      return this.filesInput;
+    files: {
+      get() {
+        return this.filesInput;
+      },
+      set(value) {
+        return value;
+      },
     },
   },
   methods: {
@@ -143,9 +147,9 @@ export default {
               file.extType = getFileType(file.name);
             });
           }
-          this.$emit("onFileInput", this.files);
         });
       }
+      this.$emit("onFileInput", this.files);
     },
     dragover(e) {
       e.preventDefault();
@@ -161,7 +165,8 @@ export default {
       this.isDragging = false;
     },
     onRemove(i) {
-      this.files.splice(i, 1);
+      this.files = this.files.filter((f) => f.name != i.name);
+      this.msg.error = "";
       this.$emit("onRemoveFiles", i);
     },
     uploadFiles() {
