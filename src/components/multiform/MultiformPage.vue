@@ -77,18 +77,21 @@ export default {
         this.formData = this.getFormData;
         if (this.isFirstForm && this.firstForm.length > 0) {
           this.mutationForm(this.multiForm, this.firstForm, value);
+          this.formData = this.firstForm;
         } else if (this.isSecondForm && this.secondForm.length > 0) {
           this.multiForm.forEach((item) => {
             if (item.step === value) {
               item.data = JSON.parse(JSON.stringify(this.secondForm));
             }
           });
+          this.formData = this.secondForm;
         } else if (this.isThirdForm && this.thirdForm.length > 0) {
           this.multiForm.forEach((item) => {
             if (item.step === value) {
               item.data = JSON.parse(JSON.stringify(this.thirdForm));
             }
           });
+          this.formData = this.thirdForm;
         }
       },
     },
