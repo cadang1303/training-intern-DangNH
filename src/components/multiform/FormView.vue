@@ -83,27 +83,6 @@ export default {
     error() {
       return this.$el.getElementsByClassName("msg-text").length;
     },
-    // isValid() {
-    //   let result = false;
-    //   if (!this.isSecondForm) {
-    //     result =
-    //       this.formData
-    //         .filter((item) => item.validation.required)
-    //         .every((i) => i.value && !i.msg) &&
-    //       this.formData.every((i) => !i.msg);
-    //   } else
-    //     result =
-    //       this.formData.filter((item) =>
-    //         item.fields
-    //           .filter((i) => i.validation.required)
-    //           .every((i) => i.value && !i.msg)
-    //       ) &&
-    //       this.formData.filter((item) =>
-    //         item.fields.every((item) => !item.msg)
-    //       );
-
-    //   return result;
-    // },
   },
   watch: {
     currentStep: {
