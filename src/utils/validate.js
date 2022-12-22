@@ -33,14 +33,11 @@ export function validateFileSize(file, maxSize) {
 }
 
 export function validateDuplicate(file, fileList) {
-  let result = true;
   let list = fileList.filter((f) => {
     return f.name != file.name;
   });
-  if (list.length === fileList.length) {
-    result = false;
-  }
-  return result;
+
+  return !(fileList.length === list.length);
 }
 
 export function returnFileSize(number) {
