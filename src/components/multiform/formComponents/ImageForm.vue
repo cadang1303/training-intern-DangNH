@@ -49,7 +49,7 @@ export default {
     },
     filesInput: {
       type: Array,
-      required: false,
+      default: () => [],
     },
     minFiles: {
       type: Number,

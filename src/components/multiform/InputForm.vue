@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="form-group" :class="{ required: item.required }">
+    <div class="form-group" :class="{ required: item.validation.required }">
       <label class="control-label" :for="item.name">{{ item.label }}</label>
       <small v-if="item.textSmall">{{ item.textSmall }}</small>
       <InputField
@@ -8,6 +8,7 @@
         :msg="item.msg"
         :name="item.name"
         :value="valueInput"
+        :maxLength="item.validation.maxLength"
         :placeholder="item.placeholder"
         @onInput="onInput"
       />
@@ -17,7 +18,7 @@
         :name="item.name"
         :value="valueInput"
         :onCounter="item.onCounter"
-        :maxLength="item.maxLength"
+        :maxLength="item.validation.maxLength"
         :placeholder="item.placeholder"
         @onInput="onInput"
       />
@@ -38,14 +39,6 @@
         :placeholder="item.placeholder"
         @onInput="onInput"
       />
-      <DateRangeForm
-        v-if="item.type === 'daterange'"
-        :value="valueInput"
-        :msg="item.msg"
-        :name="item.name"
-        :placeholder="item.placeholder"
-        @onInput="onInput"
-      />
       <MultiSelect
         v-if="item.type === 'multiselect'"
         :name="item.name"
@@ -62,9 +55,9 @@
         :triggerText="item.triggerText"
         :dragText="item.dragText"
         :filesInput="item.value"
-        :minFiles="item.minFiles"
-        :maxFiles="item.maxFiles"
-        :validExt="item.validExt"
+        :minFiles="item.validation.minFiles"
+        :maxFiles="item.validation.maxFiles"
+        :validExt="item.validation.validExt"
         @onInputImg="onInputImg"
         @onRemoveImages="onRemoveImages"
       />
@@ -72,6 +65,7 @@
         v-if="item.type === 'salary'"
         :msg="item.msg"
         :name="item.name"
+        :maxLength="item.validation.maxLength"
         :value="valueInput"
         :currency="item.currency"
         :placeholder="item.placeholder"
@@ -89,7 +83,6 @@
 
 <script>
 import DatepickerForm from "./formComponents/DatepickerForm";
-import DateRangeForm from "./formComponents/DateRangeForm";
 import InputField from "./formComponents/InputField";
 import InputSelect from "./formComponents/InputSelect";
 import TextareaInput from "./formComponents/TextareaInput";
@@ -111,6 +104,7 @@ export default {
   data() {
     return {
       valueInput: "",
+      isValid: false,
     };
   },
   watch: {
@@ -150,7 +144,6 @@ export default {
     TextareaInput,
     DatepickerForm,
     InputSelect,
-    DateRangeForm,
     SalaryInput,
     ImageForm,
     MultiSelect,

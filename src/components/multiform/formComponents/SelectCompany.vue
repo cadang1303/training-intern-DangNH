@@ -47,6 +47,7 @@ export default {
     },
     value: {
       type: String,
+      default: () => "",
     },
     list: {
       type: Array,

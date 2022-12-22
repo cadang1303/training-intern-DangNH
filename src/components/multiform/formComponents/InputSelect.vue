@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="form-container">
     <select
       class="form-control"
       :id="name"
@@ -65,31 +65,10 @@ export default {
 </script>
 
 <style scoped>
-.form-group {
+.form-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 10px;
-}
-.control-label {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: #333333;
-  margin-bottom: 6px;
-}
-.form-group.required .control-label:before {
-  content: "Must";
-  font-weight: 700;
-  font-size: 12px;
-  line-height: 20px;
-  color: #ffffff;
-  border-radius: 3px;
-  padding: 0 8px;
-  margin-right: 8px;
-  width: 45px;
-  height: 20px;
-  background: #627d98;
 }
 .form-control {
   padding: 8px 10px;
@@ -110,5 +89,12 @@ export default {
 }
 .form-error:hover {
   border: 1px solid #ed5d5d;
+}
+.msg-text {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  color: #ed5d5d;
 }
 </style>

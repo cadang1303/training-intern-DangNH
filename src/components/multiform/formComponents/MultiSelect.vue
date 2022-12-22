@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="form-container">
     <AutoComplete
       :items="filteredList"
       :selectedArr="chosenList"
@@ -8,7 +8,7 @@
       @onCancel="onRemoveDropdown"
       @onInput="onInputKeyword"
     />
-    <span class="msg-text">
+    <span v-if="msg" class="msg-text">
       {{ msg }}
     </span>
   </div>
@@ -29,7 +29,7 @@ export default {
     },
     chosenList: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     textSmall: {
       type: String,
@@ -77,36 +77,16 @@ export default {
 </script>
 
 <style scoped>
-.form-group {
+.form-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 10px;
 }
-.control-label {
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-  color: #333333;
-  margin-bottom: 6px;
-}
-.form-group.required .control-label:before {
-  content: "Must";
-  font-weight: 700;
-  font-size: 12px;
-  line-height: 20px;
-  color: #ffffff;
-  border-radius: 3px;
-  padding: 0 8px;
-  margin-right: 8px;
-  width: 45px;
-  height: 20px;
-  background: #627d98;
-}
-.form-group small {
+.msg-text {
+  font-style: normal;
   font-weight: 400;
   font-size: 12px;
-  color: #666666;
-  margin: 4px;
+  line-height: 20px;
+  color: #ed5d5d;
 }
 </style>

@@ -41,13 +41,15 @@
 
 <script>
 import { multiForm } from "@/data/form";
-import {
-  validateFirstForm,
-  validateSecondForm,
-  validateThirdForm,
-} from "@/utils/validateForm";
 import InputForm from "./InputForm";
 import ButtonComponent from "@/components/base/ButtonComponent";
+import {
+  validateDateRange,
+  validateDate,
+  validateDigit,
+  validateLength,
+  validateRequired,
+} from "@/utils/validateForm";
 
 export default {
   props: {
@@ -63,7 +65,6 @@ export default {
     return {
       isValid: false,
       multiForm,
-      element: null,
     };
   },
   computed: {
@@ -73,14 +74,42 @@ export default {
     isSecondForm() {
       return this.currentStep === 2;
     },
-    isThirdForm() {
-      return this.currentStep === 3;
-    },
     isLastForm() {
       return this.currentStep === this.multiForm.length;
     },
     getSubmitBtn() {
       return this.isLastForm ? "Hoàn thành" : "Tiếp";
+    },
+    error() {
+      return this.$el.getElementsByClassName("msg-text").length;
+    },
+    // isValid() {
+    //   let result = false;
+    //   if (!this.isSecondForm) {
+    //     result =
+    //       this.formData
+    //         .filter((item) => item.validation.required)
+    //         .every((i) => i.value && !i.msg) &&
+    //       this.formData.every((i) => !i.msg);
+    //   } else
+    //     result =
+    //       this.formData.filter((item) =>
+    //         item.fields
+    //           .filter((i) => i.validation.required)
+    //           .every((i) => i.value && !i.msg)
+    //       ) &&
+    //       this.formData.filter((item) =>
+    //         item.fields.every((item) => !item.msg)
+    //       );
+
+    //   return result;
+    // },
+  },
+  watch: {
+    currentStep: {
+      handler() {
+        this.isValid = false;
+      },
     },
   },
   methods: {
@@ -107,23 +136,32 @@ export default {
     },
     onChangeCompanyForm(value, indexChild, index) {
       this.$emit("onChangeCompanyForm", value, indexChild, index);
+      if (this.formData[index].fields[indexChild].type === "daterange") {
+        validateDateRange(this.formData, index, indexChild);
+      }
     },
     goBack() {
       this.$emit("changeForm", this.currentStep - 1);
     },
     goNext() {
-      if (this.isFirstForm) {
-        this.isValid = validateFirstForm(this.formData);
+      this.validate();
+      let msgText = null;
+      if (!this.isSecondForm) {
+        msgText = this.formData.filter((item) => item.msg);
+      } else {
+        this.formData.forEach(
+          (item) => (msgText = item.fields.filter((i) => i.msg))
+        );
       }
 
-      if (this.isSecondForm) {
-        this.isValid = validateSecondForm(this.formData);
-      }
+      if (!msgText.length) {
+        this.isValid = true;
+      } else this.isValid = false;
 
-      if (this.isThirdForm) {
-        this.isValid = validateThirdForm(this.formData);
-      }
-      if (!this.isValid) {
+      if (this.isValid) {
+        this.$emit("submitForm", this.formData);
+        this.$emit("changeForm", this.currentStep + 1);
+      } else {
         setTimeout(() => {
           let el = document.getElementsByClassName("msg-text")[0].offsetTop;
           window.scrollTo({
@@ -131,9 +169,38 @@ export default {
             behavior: "smooth",
           });
         }, 200);
+      }
+    },
+    validate() {
+      if (!this.isSecondForm) {
+        this.formData.forEach((item) => {
+          if (item.validation.required) {
+            validateRequired(item);
+          }
+          if (item.validation.maxLength) {
+            validateLength(item);
+          }
+          if (item.type === "date") {
+            validateDate(item);
+          }
+          if (item.type === "salary") {
+            validateDigit(item);
+          }
+        });
       } else {
-        this.$emit("submitForm", this.formData);
-        this.$emit("changeForm", this.currentStep + 1);
+        for (let i = 0; i < this.formData.length; i++) {
+          for (let j = 0; j < this.formData[i].fields.length; j++) {
+            if (this.formData[i].fields[j].validation.required) {
+              validateRequired(this.formData[i].fields[j]);
+            }
+            if (this.formData[i].fields[j].validation.maxLength) {
+              validateLength(this.formData[i].fields[j]);
+            }
+            if (this.formData[i].fields[j].type === "daterange") {
+              validateDateRange(this.formData, i);
+            }
+          }
+        }
       }
     },
   },

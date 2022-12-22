@@ -34,7 +34,7 @@ export default {
     },
     value: {
       type: Object,
-      required: true,
+      default: () => ({ from: "", to: "" }),
     },
     name: {
       type: String,

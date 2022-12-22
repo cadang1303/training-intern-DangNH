@@ -27,6 +27,7 @@ export default {
     },
     value: {
       type: String,
+      default: () => "",
     },
     name: {
       type: String,

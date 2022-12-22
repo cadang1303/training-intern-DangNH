@@ -1,132 +1,95 @@
-export function validateFirstForm(formData) {
+export function validateRequired(item) {
+  let required = `${item.label} là bắt buộc!`;
   let result = true;
-
-  formData.forEach((i) => (i.msg = ""));
-  const today = new Date().getTime();
-  const fullName = formData.find((i) => i.name === "fullName");
-  const dob = formData.find((i) => i.name === "dob");
-  const dobValue = new Date(dob.value).getTime();
-  const desc = formData.find((i) => i.name === "desc");
-
-  if (!fullName.value) {
-    fullName.msg = `${fullName.label} là bắt buộc !`;
+  if (!item.value || item.value === "" || item.value.length === 0) {
     result = false;
-  } else if (fullName.value.length > fullName.maxLength) {
-    fullName.msg = `${fullName.label} có độ dài tối đa là ${fullName.maxLength} ký tự!`;
-    result = false;
+    item.msg = required;
   }
-
-  if (!dob.value) {
-    dob.msg = `${dob.label} là bắt buộc !`;
-    result = false;
-  } else if (dobValue >= today) {
-    dob.msg = `${dob.label} không thể vượt quá thời điểm hiện tại.`;
-    result = false;
+  if (typeof item.value === Object) {
+    let value1 = item.value.from;
+    let value2 = item.value.to;
+    if (!value1 || !value2) {
+      result = false;
+      item.msg = required;
+    }
   }
+  return result;
+}
 
-  if (desc.value.length > desc.maxLength) {
-    desc.msg = `${desc.label} có độ dài tối đa là ${desc.maxLength}`;
+export function validateLength(item) {
+  let result = true;
+  if (item.value.length > item.validation.maxLength) {
     result = false;
+    item.msg = `${item.label} có độ dài tối đa là ${item.validation.maxLength} ký tự!`;
+  }
+  return result;
+}
+
+export function validateDigit(item) {
+  let result = true;
+  const digit = new RegExp("(^[0-9]*$)");
+
+  if (!digit.test(item.value)) {
+    result = false;
+    item.msg = `${item.label} chỉ chấp nhận chữ số.`;
   }
 
   return result;
 }
 
-export function validateSecondForm(formData) {
+export function validateDate(item) {
+  let result = true;
+  const today = new Date().getTime();
+  let date = new Date(item.value).getTime();
+  if (date >= today) {
+    result = false;
+    item.msg = `${item.label} không thể vượt quá thời gian hiện tại.`;
+  }
+
+  return result;
+}
+
+export function validateDateRange(formData, index) {
   let result = true;
   const today = new Date().getTime();
 
-  formData.forEach((i) => {
-    i.fields.forEach((c) => (c.msg = ""));
-  });
+  let jobDate1 = formData[index].fields.find((item) => item.name === "jobDate");
+  let startDate = new Date(jobDate1.value.from).getTime();
+  let endDate = new Date(jobDate1.value.to).getTime();
 
-  if (!formData) {
+  if (!startDate || !endDate) {
     result = false;
+    jobDate1.msg = `${jobDate1.label} là bắt buộc`;
+  }
+
+  if (startDate >= today || endDate >= today) {
+    result = false;
+    jobDate1.msg = `${jobDate1.label} không thể vượt quá thời gian hiện tại.`;
+  } else if (startDate >= endDate) {
+    result = false;
+    jobDate1.msg = "Thời gian bắt đầu không thể vượt quá thời gian kết thúc";
   }
 
   for (let i = 0; i < formData.length; i++) {
-    let company = formData[i].fields.find((item) => item.name === "company");
-    let jobName = formData[i].fields.find((item) => item.name === "jobName");
-    let jobDate1 = formData[i].fields.find((item) => item.name === "jobDate");
-    let jobDesc = formData[i].fields.find((item) => item.name === "jobDesc");
-    let startDate = new Date(jobDate1.value.from).getTime();
-    let endDate = new Date(jobDate1.value.to).getTime();
-
-    if (!company.value) {
-      result = false;
-      company.msg = `Trường này là bắt buộc!`;
-    }
-
-    if (!jobName.value) {
-      result = false;
-      jobName.msg = `${jobName.label} là bắt buộc!`;
-    } else if (jobName.length > jobName.maxLength) {
-      result = false;
-      jobName.msg = `${jobName.label} có độ dài tối đa là ${jobName.maxLength} ký tự.`;
-    }
-
-    if (!jobDate1.value.from || !jobDate1.value.to) {
-      result = false;
-      jobDate1.msg = `${jobDate1.label} là bắt buộc!`;
-    } else if (startDate > today || endDate > today) {
-      result = false;
-      jobDate1.msg = `${jobDate1.label} không thể vượt quá thời gian hiện tại.`;
-    } else if (startDate > endDate) {
-      result = false;
-      jobDate1.msg = `Thời gian bắt đầu không thể vượt quá thời gian kết thúc.`;
-    }
-
-    if (jobDesc.length > jobDesc.maxLength) {
-      result = false;
-      jobDesc.msg = `${jobDesc.label} có độ dài tối đa là ${jobDesc.maxLength} ký tự.`;
-    }
-
-    for (let j = 1; j < formData.length; j++) {
-      let jobDate2 = formData[j].fields.find((item) => item.name === "jobDate");
-
-      let nextStartDate = new Date(jobDate2.value.from).getTime();
-      let nextEndDate = new Date(jobDate2.value.to).getTime();
-      if (i < j) {
-        if (
-          (nextStartDate < endDate && nextStartDate > startDate) ||
-          (nextEndDate < endDate && nextEndDate > startDate)
-        ) {
-          result = false;
-          jobDate1.msg = `Thời gian làm việc không được phép trùng lặp.`;
-          jobDate2.msg = `Thời gian làm việc không được phép trùng lặp.`;
-        }
+    const jobDate2 = formData[i].fields.find((item) => item.name === "jobDate");
+    const nextStartDate = new Date(jobDate2.value.from).getTime();
+    const nextEndDate = new Date(jobDate2.value.to).getTime();
+    if (i != index && startDate && endDate && nextStartDate && nextEndDate) {
+      if (
+        (nextStartDate >= startDate && nextStartDate <= endDate) ||
+        (nextEndDate >= startDate && nextEndDate <= endDate)
+      ) {
+        result = false;
+        jobDate1.msg = `Thời gian làm việc không thể trùng lặp`;
+        jobDate2.msg = `Thời gian làm việc không thể trùng lặp`;
       }
     }
   }
 
-  return result;
-}
-
-export function validateThirdForm(formData) {
-  formData.forEach((i) => (i.msg = ""));
-
-  let result = true;
-  const digit = new RegExp("(^[0-9]*$)");
-  const reason = formData.find((i) => i.name === "reason");
-  const salary = formData.find((i) => i.name === "salary");
-
-  if (!reason.value) {
-    result = false;
-    reason.msg = `${reason.label} là bắt buộc !`;
-  } else if (reason.value.length > reason.maxLength) {
-    result = false;
-    reason.msg = `${reason.label} có độ dài tối đa là ${reason.maxLength} ký tự.`;
-  }
-
-  if (!salary.value || salary.value <= 0) {
-    result = false;
-    salary.msg = `${salary.label} là bắt buộc !`;
-  } else if (salary.value.length > salary.maxLength) {
-    result = false;
-    salary.msg = `${salary.label} có độ dài tối đa là ${salary.maxLength} ký tự.`;
-  } else if (!digit.test(salary.value)) {
-    result = false;
-    salary.msg = `${salary.label} chỉ chấp nhận chữ số`;
+  if (result === true) {
+    formData.forEach((item) => {
+      item.fields.find((item) => item.name === "jobDate").msg = "";
+    });
   }
 
   return result;

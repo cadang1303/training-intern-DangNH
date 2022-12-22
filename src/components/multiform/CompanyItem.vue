@@ -1,5 +1,5 @@
 <template>
-  <div class="form-container">
+  <div class="form-company-container">
     <div class="content" v-for="(item, index) in form.fields" :key="item.name">
       <SelectCompany
         v-if="item.type === 'select-company'"
@@ -12,13 +12,19 @@
         @onInput="(value) => onChangeItem(value, index)"
         @onRemove="onRemoveCompany"
       />
-      <div class="form-group" :class="{ required: item.required }">
-        <label class="control-label" :for="item.name">{{ item.label }}</label>
+      <div
+        class="form-group"
+        v-if="item.type != 'select-company'"
+        :class="{ required: item.validation.required }"
+      >
+        <label v-if="item.label" class="control-label" :for="item.name">{{
+          item.label
+        }}</label>
         <small v-if="item.textSmall">{{ item.textSmall }}</small>
         <InputField
           v-if="item.type === 'text'"
-          :required="item.required"
           :inputLabel="item.label"
+          :maxLength="item.validation.maxLength"
           :msg="item.msg"
           :value="item.value"
           :name="item.name"
@@ -27,7 +33,6 @@
         />
         <DateRangeForm
           v-if="item.type === 'daterange'"
-          :required="item.required"
           :inputLabel="item.label"
           :msg="item.msg"
           :value="item.value"
@@ -37,13 +42,12 @@
         />
         <TextareaInput
           v-if="item.type === 'textarea'"
-          :required="item.required"
           :inputLabel="item.label"
           :msg="item.msg"
           :name="item.name"
           :value="item.value"
           :onCounter="item.onCounter"
-          :maxLength="item.maxLength"
+          :maxLength="item.validation.maxLength"
           :placeholder="item.placeholder"
           @onInput="(value) => onChangeItem(value, index)"
         />
@@ -83,7 +87,7 @@ export default {
 </script>
 
 <style scoped>
-.form-container {
+.form-company-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;

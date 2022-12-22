@@ -57,6 +57,9 @@ export default {
     isLastForm() {
       return this.currentStep === this.multiForm.length;
     },
+    formName() {
+      return this.multiForm.find((item) => item.step === this.currentStep).name;
+    },
     getFormData() {
       return JSON.parse(
         JSON.stringify(
@@ -73,24 +76,13 @@ export default {
   },
   watch: {
     currentStep: {
-      handler(value) {
+      handler() {
         this.formData = this.getFormData;
         if (this.isFirstForm && this.firstForm.length > 0) {
-          this.mutationForm(this.multiForm, this.firstForm, value);
           this.formData = this.firstForm;
         } else if (this.isSecondForm && this.secondForm.length > 0) {
-          this.multiForm.forEach((item) => {
-            if (item.step === value) {
-              item.data = JSON.parse(JSON.stringify(this.secondForm));
-            }
-          });
           this.formData = this.secondForm;
         } else if (this.isThirdForm && this.thirdForm.length > 0) {
-          this.multiForm.forEach((item) => {
-            if (item.step === value) {
-              item.data = JSON.parse(JSON.stringify(this.thirdForm));
-            }
-          });
           this.formData = this.thirdForm;
         }
       },
@@ -135,7 +127,7 @@ export default {
     },
     onInput(value, index) {
       if (this.formData[index].name === "salary") {
-        this.formData[index].value = +value;
+        this.formData[index].value = value.replace(/^0+/, "");
       } else {
         this.formData[index].value = value;
       }
@@ -152,9 +144,7 @@ export default {
           if (value.length <= 0) {
             i.value.push(option);
             i.list.map((opt) => {
-              if (opt.name === option.name) {
-                opt.isSelected = true;
-              }
+              opt.isSelected = opt.name === option.name;
             });
           }
         }
@@ -163,40 +153,42 @@ export default {
     onRemoveJob(option) {
       this.formData.forEach((i) => {
         if (i.name === "jobs") {
-          // i.value.splice(i.value.indexOf(option), 1);
           i.value = i.value.filter((c) => c.name != option.name);
           i.list.map((opt) => {
-            if (opt.name === option.name) {
-              opt.isSelected = false;
-            }
+            opt.isSelected = opt.name === option.name;
           });
         }
       });
     },
     toFormJSON(formData) {
       let obj = {};
+      let arr = [];
       let data = {};
-      formData.forEach((i) => {
-        if (i.fields) {
-          this.form[i.type] = {};
-          i.fields.forEach((c) => {
+      
+      for (let i = 0; i < formData.length; i++) {
+        if (formData[i].fields) {
+          formData[i].fields.forEach((c) => {
             obj[c.name] = c.value;
           });
-          this.form[i.type] = obj;
-        } else if (Array.isArray(i.value)) {
-          if (i.value.length > 0) {
-            for (let j = 0; j < i.value.length; j++) {
-              data[j] = i.value[j];
+          arr.push(obj);
+          this.form[formData[i].type] = {};
+          if (i === arr.length - 1) {
+            for (let j = 0; j < arr.length; j++) {
+              this.form[formData[i].type][j] = arr[j];
             }
-            this.form[i.name] = data;
-          } else this.form[i.name] = {};
-        } else {
-          this.form[i.name] = i.value;
-        }
-      });
+          }
+        } else if (Array.isArray(formData[i].value)) {
+          if (formData[i].value.length > 0) {
+            for (let j = 0; j < formData[i].value.length; j++) {
+              data[j] = formData[i].value[j];
+            }
+            this.form[formData[i].name] = formData[i].value;
+          } else this.form[formData[i].name] = {};
+        } else this.form[formData[i].name] = formData[i].value;
+      }
     },
     submitForm() {
-      this.saveForm({ formData: this.formData, step: this.currentStep });
+      this.saveForm({ formData: this.formData, formName: this.formName });
       this.toFormJSON(this.formData);
       if (this.isLastForm) {
         console.log(this.form);

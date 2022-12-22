@@ -29,7 +29,7 @@ export default {
       required: false,
     },
     value: {
-      required: false,
+      default: () => "",
     },
     maxLength: {
       type: Number,

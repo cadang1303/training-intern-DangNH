@@ -12,13 +12,7 @@ export default {
   },
   mutations: {
     SAVE_FORM(state, payload) {
-      if (payload.step === 1) {
-        state.firstForm = payload.formData;
-      } else if (payload.step === 2) {
-        state.secondForm = payload.formData;
-      } else if (payload.step === 3) {
-        state.thirdForm = payload.formData;
-      }
+      state[payload.formName] = payload.formData;
     },
   },
   actions: {
