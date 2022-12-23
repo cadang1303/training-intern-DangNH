@@ -64,43 +64,24 @@ export default {
       );
     },
   },
-  mounted() {
-    if (this.isFirstForm && this.firstForm.length > 0) {
-      this.mutationForm(this.multiForm, this.firstForm, this.currentStep);
-    }
-    this.formData = this.getFormData;
-  },
   watch: {
     currentStep: {
       handler() {
-        this.formData = this.getFormData;
         if (this.isFirstForm && this.firstForm.length > 0) {
           this.formData = this.firstForm;
         } else if (this.isSecondForm && this.secondForm.length > 0) {
           this.formData = this.secondForm;
         } else if (this.isThirdForm && this.thirdForm.length > 0) {
           this.formData = this.thirdForm;
-        }
+        } else this.formData = this.getFormData;
       },
+      immediate: true,
     },
   },
   methods: {
     ...mapActions({
       saveForm: "form/saveForm",
     }),
-    mutationForm(multiForm, formData, stepNum) {
-      let fileValue = formData.find((item) => item.name === "img").value;
-      multiForm.forEach((item) => {
-        if (item.step === stepNum) {
-          item.data = JSON.parse(JSON.stringify(formData));
-          item.data.find((child) => {
-            if (child.name === "img") {
-              child.value = [...fileValue];
-            }
-          });
-        }
-      });
-    },
     onAddCompany() {
       this.formData.push(JSON.parse(JSON.stringify(formSecondStep)));
     },
@@ -175,6 +156,7 @@ export default {
               data[j] = formData[i].value[j];
             }
             this.form[formData[i].name] = data;
+            data = {};
           } else this.form[formData[i].name] = {};
         } else this.form[formData[i].name] = formData[i].value;
       }
@@ -188,6 +170,7 @@ export default {
       this.toFormJSON(this.formData);
       if (this.isLastForm) {
         console.log(this.form);
+        console.log(this.firstForm);
         this.$router.push("/");
       } else this.currentStep++;
     },

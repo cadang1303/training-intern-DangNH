@@ -5,7 +5,7 @@ export const formSecondStep = {
   validation: {},
   fields: [
     {
-      label: "",
+      label: "Công ty",
       type: "select-company",
       placeholder: "--Chọn công ty--",
       name: "company",

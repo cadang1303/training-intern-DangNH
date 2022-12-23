@@ -17,9 +17,12 @@
         v-if="item.type != 'select-company'"
         :class="{ required: item.validation.required }"
       >
-        <label v-if="item.label" class="control-label" :for="item.name">{{
-          item.label
-        }}</label>
+        <label
+          v-if="item.type != 'select-company'"
+          class="control-label"
+          :for="item.name"
+          >{{ item.label }}</label
+        >
         <small v-if="item.textSmall">{{ item.textSmall }}</small>
         <InputField
           v-if="item.type === 'text'"
