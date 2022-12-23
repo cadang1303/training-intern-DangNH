@@ -115,9 +115,6 @@ export default {
     },
     onChangeCompanyForm(value, indexChild, index) {
       this.$emit("onChangeCompanyForm", value, indexChild, index);
-      if (this.formData[index].fields[indexChild].type === "daterange") {
-        validateDateRange(this.formData, index, indexChild);
-      }
     },
     goBack() {
       this.$emit("changeForm", this.currentStep - 1);

@@ -164,7 +164,7 @@ export default {
       let obj = {};
       let arr = [];
       let data = {};
-      
+
       for (let i = 0; i < formData.length; i++) {
         if (formData[i].fields) {
           formData[i].fields.forEach((c) => {
@@ -182,7 +182,7 @@ export default {
             for (let j = 0; j < formData[i].value.length; j++) {
               data[j] = formData[i].value[j];
             }
-            this.form[formData[i].name] = formData[i].value;
+            this.form[formData[i].name] = data;
           } else this.form[formData[i].name] = {};
         } else this.form[formData[i].name] = formData[i].value;
       }
