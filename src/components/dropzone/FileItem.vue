@@ -37,6 +37,7 @@ import { returnFileSize } from "@/utils/validate";
 export default {
   props: {
     file: {
+      type: File,
       default: () => null,
     },
   },

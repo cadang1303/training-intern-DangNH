@@ -90,6 +90,7 @@ export default {
       required: false,
     },
     filesInput: {
+      type: Array,
       required: false,
     },
   },
