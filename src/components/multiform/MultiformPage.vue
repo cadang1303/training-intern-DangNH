@@ -170,7 +170,6 @@ export default {
       this.toFormJSON(this.formData);
       if (this.isLastForm) {
         console.log(this.form);
-        console.log(this.firstForm);
         this.$router.push("/");
       } else this.currentStep++;
     },
