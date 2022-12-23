@@ -187,7 +187,7 @@ export default {
       this.saveForm({
         formData: this.formData,
         formName: this.formName,
-        step: this.currentStep,
+        isLastForm: this.isLastForm,
       });
       this.toFormJSON(this.formData);
       if (this.isLastForm) {

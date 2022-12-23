@@ -88,9 +88,6 @@ export default {
     getSubmitBtn() {
       return this.isLastForm ? "Hoàn thành" : "Tiếp";
     },
-    error() {
-      return this.$el.getElementsByClassName("msg-text").length;
-    },
   },
   watch: {
     currentStep: {
@@ -140,7 +137,7 @@ export default {
 
       if (!msgText.length) {
         this.isValid = true;
-      } else this.isValid = false;
+      } 
 
       if (this.isValid) {
         this.$emit("submitForm", this.formData);

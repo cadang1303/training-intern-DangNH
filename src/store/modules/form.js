@@ -18,7 +18,7 @@ export default {
   actions: {
     saveForm({ commit, dispatch }, data) {
       commit("SAVE_FORM", data);
-      if (data.step === 3) {
+      if (data.isLastForm) {
         dispatch(
           "notifications/addNotification",
           {
