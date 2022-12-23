@@ -188,7 +188,11 @@ export default {
       }
     },
     submitForm() {
-      this.saveForm({ formData: this.formData, formName: this.formName });
+      this.saveForm({
+        formData: this.formData,
+        formName: this.formName,
+        step: this.currentStep,
+      });
       this.toFormJSON(this.formData);
       if (this.isLastForm) {
         console.log(this.form);
