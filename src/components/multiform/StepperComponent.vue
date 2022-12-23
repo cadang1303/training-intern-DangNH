@@ -5,6 +5,7 @@
       :key="step.id"
       class="stepper-item"
       :class="{ active: step.id <= currentStep }"
+      @click="goToStep(step.id)"
     >
       <div class="step-counter">{{ step.id }}</div>
       <div class="step-name">{{ step.label }}</div>
@@ -21,6 +22,11 @@ export default {
     },
     steps: {
       type: Array,
+    },
+  },
+  methods: {
+    goToStep(step) {
+      this.$emit("goToStep", step);
     },
   },
 };
@@ -41,6 +47,7 @@ export default {
   flex-direction: column;
   align-items: center;
   flex: 1;
+  cursor: pointer;
 }
 .stepper-item::before {
   position: absolute;

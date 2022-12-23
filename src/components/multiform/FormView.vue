@@ -1,5 +1,10 @@
 <template>
   <div class="main">
+    <StepperComponent
+      :currentStep="currentStep"
+      :steps="STEPS"
+      @goToStep="goToStep"
+    />
     <div :class="{ 'form-container': !isSecondForm }">
       <InputForm
         v-for="(item, index) in formData"
@@ -41,8 +46,10 @@
 
 <script>
 import { multiForm } from "@/data/form";
+import { STEPS } from "@/data/data";
 import InputForm from "./InputForm";
 import ButtonComponent from "@/components/base/ButtonComponent";
+import StepperComponent from "./StepperComponent";
 import {
   validateDateRange,
   validateDate,
@@ -65,6 +72,7 @@ export default {
     return {
       isValid: false,
       multiForm,
+      STEPS,
     };
   },
   computed: {
@@ -179,10 +187,41 @@ export default {
         }
       }
     },
+    goToStep(step) {
+      if (step > this.currentStep) {
+        this.validate();
+        let msgText = null;
+        if (!this.isSecondForm) {
+          msgText = this.formData.filter((item) => item.msg);
+        } else {
+          this.formData.forEach(
+            (item) => (msgText = item.fields.filter((i) => i.msg))
+          );
+        }
+
+        if (!msgText.length) {
+          this.isValid = true;
+        } else this.isValid = false;
+
+        if (this.isValid) {
+          this.$emit("submitForm", this.formData);
+          this.$emit("changeForm", step);
+        } else {
+          setTimeout(() => {
+            let el = document.getElementsByClassName("msg-text")[0].offsetTop;
+            window.scrollTo({
+              top: el - 300,
+              behavior: "smooth",
+            });
+          }, 200);
+        }
+      } else this.$emit("changeForm", step);
+    },
   },
   components: {
     InputForm,
     ButtonComponent,
+    StepperComponent,
   },
 };
 </script>

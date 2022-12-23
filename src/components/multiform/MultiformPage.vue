@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <h3 class="page-title">Đơn ứng tuyển</h3>
-    <StepperComponent :currentStep="currentStep" :steps="STEPS" />
     <FormView
       :formData="formData"
       :currentStep="currentStep"
@@ -22,18 +21,15 @@
 <script>
 import { multiForm, formSecondStep } from "@/data/form";
 import { mapActions, mapGetters } from "vuex";
-import { STEPS } from "@/data/data";
 import FormView from "./FormView";
-import StepperComponent from "./StepperComponent";
+
 export default {
   components: {
     FormView,
-    StepperComponent,
   },
   data() {
     return {
       currentStep: 1,
-      STEPS,
       multiForm,
       formData: [],
       form: {},
