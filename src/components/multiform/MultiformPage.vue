@@ -139,9 +139,7 @@ export default {
           let value = i.value.filter((c) => c.name === option.name);
           if (value.length <= 0) {
             i.value.push(option);
-            i.list.map((opt) => {
-              opt.isSelected = opt.name === option.name;
-            });
+            i.list.find((opt) => opt.name === option.name).isSelected = true;
           }
         }
       });
@@ -150,9 +148,7 @@ export default {
       this.formData.forEach((i) => {
         if (i.name === "jobs") {
           i.value = i.value.filter((c) => c.name != option.name);
-          i.list.map((opt) => {
-            opt.isSelected = opt.name === option.name;
-          });
+          i.list.find((opt) => opt.name === option.name).isSelected = false;
         }
       });
     },
