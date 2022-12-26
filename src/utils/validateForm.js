@@ -1,18 +1,12 @@
 export function validateRequired(item) {
   let required = `${item.label} là bắt buộc!`;
   let result = true;
+
   if (!item.value || item.value === "" || item.value.length === 0) {
     result = false;
     item.msg = required;
   }
-  if (typeof item.value === Object) {
-    let value1 = item.value.from;
-    let value2 = item.value.to;
-    if (!value1 || !value2) {
-      result = false;
-      item.msg = required;
-    }
-  }
+
   return result;
 }
 

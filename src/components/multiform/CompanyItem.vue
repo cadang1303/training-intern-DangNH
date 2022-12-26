@@ -3,7 +3,6 @@
     <div class="content" v-for="(item, index) in form.fields" :key="item.name">
       <SelectCompany
         v-if="item.type === 'select-company'"
-        :inputLabel="item.label"
         :msg="item.msg"
         :name="item.name"
         :value="item.value"
@@ -26,7 +25,6 @@
         <small v-if="item.textSmall">{{ item.textSmall }}</small>
         <InputField
           v-if="item.type === 'text'"
-          :inputLabel="item.label"
           :maxLength="item.validation.maxLength"
           :msg="item.msg"
           :value="item.value"
@@ -36,7 +34,6 @@
         />
         <DateRangeForm
           v-if="item.type === 'daterange'"
-          :inputLabel="item.label"
           :msg="item.msg"
           :value="item.value"
           :name="item.name"
@@ -45,7 +42,6 @@
         />
         <TextareaInput
           v-if="item.type === 'textarea'"
-          :inputLabel="item.label"
           :msg="item.msg"
           :name="item.name"
           :value="item.value"

@@ -84,26 +84,6 @@ export default {
 </script>
 
 <style scoped>
-.form-control {
-  padding: 8px 10px;
-  width: 898px;
-  background: #ffffff;
-  border: 1px solid #dcdcdc;
-  border-radius: 4px;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
-}
-.form-control:hover {
-  border: 1px solid #1991d2;
-}
-.form-error {
-  border: 1px solid #ed5d5d;
-}
-.form-error:hover {
-  border: 1px solid #ed5d5d;
-}
 .form-title {
   display: flex;
   flex-direction: row;
@@ -126,11 +106,20 @@ export default {
   color: #333333;
   border-radius: 4px;
 }
+.form-title .form-control:hover {
+  border: 1px solid #1991d2;
+}
 .form-title .form-control option {
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
   color: #333333;
+}
+.form-title .form-error {
+  border: 1px solid #ed5d5d;
+}
+.form-title .form-error:hover {
+  border: 1px solid #ed5d5d;
 }
 .btn-remove {
   width: 32px;
