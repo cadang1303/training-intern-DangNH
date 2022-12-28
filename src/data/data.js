@@ -1,9 +1,3 @@
-export const STEPS = [
-  { id: 1, label: "Thông tin cá nhân" },
-  { id: 2, label: "Kinh nghiệm làm việc" },
-  { id: 3, label: "Xác nhận thông tin" },
-];
-
 export const JOB_LIST = [
   { id: 1, name: "BE Dev", isSelected: false },
   { id: 2, name: "FE Dev", isSelected: false },

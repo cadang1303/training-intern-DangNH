@@ -2,12 +2,12 @@
   <div class="stepper-wrapper">
     <div
       v-for="step in steps"
-      :key="step.id"
+      :key="step.step"
       class="stepper-item"
-      :class="{ active: step.id <= currentStep }"
-      @click="goToStep(step.id)"
+      :class="{ active: step.step <= currentStep }"
+      @click="goToStep(step.step)"
     >
-      <div class="step-counter">{{ step.id }}</div>
+      <div class="step-counter">{{ step.step }}</div>
       <div class="step-name">{{ step.label }}</div>
     </div>
   </div>

@@ -2,7 +2,7 @@
   <div class="main">
     <StepperComponent
       :currentStep="currentStep"
-      :steps="STEPS"
+      :steps="multiForm"
       @goToStep="goToStep"
     />
     <div :class="{ 'form-container': !isSecondForm }">
@@ -46,7 +46,6 @@
 
 <script>
 import { multiForm } from "@/data/form";
-import { STEPS } from "@/data/data";
 import InputForm from "./InputForm";
 import ButtonComponent from "@/components/base/ButtonComponent";
 import StepperComponent from "./StepperComponent";
@@ -72,7 +71,6 @@ export default {
     return {
       isValid: false,
       multiForm,
-      STEPS,
     };
   },
   computed: {
@@ -137,7 +135,7 @@ export default {
 
       if (!msgText.length) {
         this.isValid = true;
-      } 
+      }
 
       if (this.isValid) {
         this.$emit("submitForm", this.formData);
