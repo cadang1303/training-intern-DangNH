@@ -124,17 +124,25 @@ export default {
     },
     goNext() {
       this.validate();
-      let msgText = null;
+      let msgText = [];
       if (!this.isSecondForm) {
-        msgText = this.formData.filter((item) => item.msg);
+        this.formData.forEach((item) => {
+          if (item.msg) {
+            msgText.push(item.msg);
+          }
+        });
       } else {
         msgText = [];
         this.formData.forEach((item) =>
-          msgText.push(item.fields.filter((i) => i.msg))
+          item.fields.forEach((i) => {
+            if (i.msg) {
+              msgText.push(i.msg);
+            }
+          })
         );
       }
 
-      if (!msgText.length || !msgText[0].length) {
+      if (!msgText.length) {
         this.isValid = true;
       }
 
@@ -188,17 +196,25 @@ export default {
     goToStep(step) {
       if (step > this.currentStep) {
         this.validate();
-        let msgText = null;
+        let msgText = [];
         if (!this.isSecondForm) {
-          msgText = this.formData.filter((item) => item.msg);
+          this.formData.forEach((item) => {
+            if (item.msg) {
+              msgText.push(item.msg);
+            }
+          });
         } else {
           msgText = [];
           this.formData.forEach((item) =>
-            msgText.push(item.fields.filter((i) => i.msg))
+            item.fields.forEach((i) => {
+              if (i.msg) {
+                msgText.push(i.msg);
+              }
+            })
           );
         }
 
-        if (!msgText.length || !msgText[0].length) {
+        if (!msgText.length) {
           this.isValid = true;
         }
 
