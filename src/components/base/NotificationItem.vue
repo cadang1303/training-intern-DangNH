@@ -69,6 +69,7 @@ export default {
   font-weight: 600;
   line-height: 20px;
   margin: 0 auto;
+  cursor: pointer;
 }
 
 @-webkit-keyframes fadein {
