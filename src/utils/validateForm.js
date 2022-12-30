@@ -78,6 +78,13 @@ export function validateDateRange(formData, index) {
         jobDate2.msg = `Thời gian làm việc không thể trùng lặp`;
       }
     }
+    if (nextStartDate >= today || nextEndDate >= today) {
+      result = false;
+      jobDate2.msg = `${jobDate2.label} không thể vượt quá thời gian hiện tại.`;
+    } else if (nextStartDate >= nextEndDate) {
+      result = false;
+      jobDate2.msg = "Thời gian bắt đầu không thể vượt quá thời gian kết thúc";
+    }
   }
 
   if (result === true) {

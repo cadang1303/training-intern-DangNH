@@ -128,12 +128,13 @@ export default {
       if (!this.isSecondForm) {
         msgText = this.formData.filter((item) => item.msg);
       } else {
-        this.formData.forEach(
-          (item) => (msgText = item.fields.filter((i) => i.msg))
+        msgText = [];
+        this.formData.forEach((item) =>
+          msgText.push(item.fields.filter((i) => i.msg))
         );
       }
 
-      if (!msgText.length) {
+      if (!msgText.length || !msgText[0].length) {
         this.isValid = true;
       }
 
@@ -142,7 +143,9 @@ export default {
         this.$emit("changeForm", this.currentStep + 1);
       } else {
         setTimeout(() => {
-          let el = document.getElementsByClassName("msg-text")[0].offsetTop;
+          let el = document
+            .getElementsByClassName("msg-text")[0]
+            .getBoundingClientRect().top;
           window.scrollTo({
             top: el - 300,
             behavior: "smooth",
