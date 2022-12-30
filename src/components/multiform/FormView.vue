@@ -192,14 +192,15 @@ export default {
         if (!this.isSecondForm) {
           msgText = this.formData.filter((item) => item.msg);
         } else {
-          this.formData.forEach(
-            (item) => (msgText = item.fields.filter((i) => i.msg))
+          msgText = [];
+          this.formData.forEach((item) =>
+            msgText.push(item.fields.filter((i) => i.msg))
           );
         }
 
-        if (!msgText.length) {
+        if (!msgText.length || !msgText[0].length) {
           this.isValid = true;
-        } else this.isValid = false;
+        }
 
         if (this.isValid) {
           this.$emit("submitForm", this.formData);
