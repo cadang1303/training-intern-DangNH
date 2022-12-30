@@ -187,7 +187,7 @@ export default {
               validateLength(this.formData[i].fields[j]);
             }
             if (this.formData[i].fields[j].type === "daterange") {
-              validateDateRange(this.formData, i);
+              validateDateRange(this.formData);
             }
           }
         }

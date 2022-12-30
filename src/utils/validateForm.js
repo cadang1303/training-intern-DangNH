@@ -43,47 +43,51 @@ export function validateDate(item) {
   return result;
 }
 
-export function validateDateRange(formData, index) {
+export function validateDateRange(formData) {
   let result = true;
   const today = new Date().getTime();
 
-  let jobDate1 = formData[index].fields.find((item) => item.name === "jobDate");
-  let startDate = new Date(jobDate1.value.from).getTime();
-  let endDate = new Date(jobDate1.value.to).getTime();
-
-  if (!startDate || !endDate) {
-    result = false;
-    jobDate1.msg = `${jobDate1.label} là bắt buộc`;
-  }
-
-  if (startDate >= today || endDate >= today) {
-    result = false;
-    jobDate1.msg = `${jobDate1.label} không thể vượt quá thời gian hiện tại.`;
-  } else if (startDate >= endDate) {
-    result = false;
-    jobDate1.msg = "Thời gian bắt đầu không thể vượt quá thời gian kết thúc";
-  }
-
   for (let i = 0; i < formData.length; i++) {
-    const jobDate2 = formData[i].fields.find((item) => item.name === "jobDate");
-    const nextStartDate = new Date(jobDate2.value.from).getTime();
-    const nextEndDate = new Date(jobDate2.value.to).getTime();
-    if (i != index && startDate && endDate && nextStartDate && nextEndDate) {
-      if (
-        (nextStartDate >= startDate && nextStartDate <= endDate) ||
-        (nextEndDate >= startDate && nextEndDate <= endDate)
-      ) {
-        result = false;
-        jobDate1.msg = `Thời gian làm việc không thể trùng lặp`;
-        jobDate2.msg = `Thời gian làm việc không thể trùng lặp`;
-      }
+    let jobDate1 = formData[i].fields.find((item) => item.name === "jobDate");
+    let startDate = new Date(jobDate1.value.from).getTime();
+    let endDate = new Date(jobDate1.value.to).getTime();
+
+    if (!startDate || !endDate) {
+      result = false;
+      jobDate1.msg = `${jobDate1.label} là bắt buộc`;
     }
-    if (nextStartDate >= today || nextEndDate >= today) {
+
+    if (startDate >= today || endDate >= today) {
       result = false;
-      jobDate2.msg = `${jobDate2.label} không thể vượt quá thời gian hiện tại.`;
-    } else if (nextStartDate >= nextEndDate) {
+      jobDate1.msg = `${jobDate1.label} không thể vượt quá thời gian hiện tại.`;
+    } else if (startDate >= endDate) {
       result = false;
-      jobDate2.msg = "Thời gian bắt đầu không thể vượt quá thời gian kết thúc";
+      jobDate1.msg = "Thời gian bắt đầu không thể vượt quá thời gian kết thúc";
+    }
+    for (let j = 1; j < formData.length; j++) {
+      const jobDate2 = formData[j].fields.find(
+        (item) => item.name === "jobDate"
+      );
+      const nextStartDate = new Date(jobDate2.value.from).getTime();
+      const nextEndDate = new Date(jobDate2.value.to).getTime();
+      if (i != j && startDate && endDate && nextStartDate && nextEndDate) {
+        if (
+          (nextStartDate >= startDate && nextStartDate <= endDate) ||
+          (nextEndDate >= startDate && nextEndDate <= endDate)
+        ) {
+          result = false;
+          jobDate1.msg = `Thời gian làm việc không thể trùng lặp`;
+          jobDate2.msg = `Thời gian làm việc không thể trùng lặp`;
+        }
+      }
+      if (nextStartDate >= today || nextEndDate >= today) {
+        result = false;
+        jobDate2.msg = `${jobDate2.label} không thể vượt quá thời gian hiện tại.`;
+      } else if (nextStartDate >= nextEndDate) {
+        result = false;
+        jobDate2.msg =
+          "Thời gian bắt đầu không thể vượt quá thời gian kết thúc";
+      }
     }
   }
 
