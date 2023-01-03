@@ -4,7 +4,7 @@
       <label class="control-label" :for="item.name">{{ item.label }}</label>
       <small v-if="item.textSmall">{{ item.textSmall }}</small>
       <InputField
-        v-if="item.type === 'text'"
+        v-if="item.type === TEXT"
         :msg="item.msg"
         :name="item.name"
         :value="valueInput"
@@ -13,7 +13,7 @@
         @onInput="onInput"
       />
       <TextareaInput
-        v-if="item.type === 'textarea'"
+        v-if="item.type === TEXTAREA"
         :msg="item.msg"
         :name="item.name"
         :value="valueInput"
@@ -23,15 +23,23 @@
         @onInput="onInput"
       />
       <DatepickerForm
-        v-if="item.type === 'date'"
+        v-if="item.type === DATE"
         :msg="item.msg"
         :name="item.name"
         :value="valueInput"
         :placeholder="item.placeholder"
         @onInput="onInput"
       />
+      <DateRangeForm
+        v-if="item.type === DATE_RANGE"
+        :msg="item.msg"
+        :value="item.value"
+        :name="item.name"
+        :placeholder="item.placeholder"
+        @onInput="onInput"
+      />
       <InputSelect
-        v-if="item.type === 'select-city'"
+        v-if="item.type === SELECT_CITY"
         :msg="item.msg"
         :value="valueInput"
         :name="item.name"
@@ -40,7 +48,7 @@
         @onInput="onInput"
       />
       <MultiSelect
-        v-if="item.type === 'multiselect'"
+        v-if="item.type === MULTISELECT"
         :name="item.name"
         :textSmall="item.textSmall"
         :list="item.list"
@@ -50,7 +58,7 @@
         @onRemoveDropdown="onRemoveJob"
       />
       <ImageForm
-        v-if="item.type === 'dropzone'"
+        v-if="item.type === DROPZONE"
         :placeholder="item.placeholder"
         :triggerText="item.triggerText"
         :dragText="item.dragText"
@@ -62,7 +70,7 @@
         @onRemoveImages="onRemoveImages"
       />
       <SalaryInput
-        v-if="item.type === 'salary'"
+        v-if="item.type === SALARY"
         :msg="item.msg"
         :name="item.name"
         :maxLength="item.validation.maxLength"
@@ -73,7 +81,7 @@
       />
     </div>
     <CompanyItem
-      v-if="item.type === 'companies'"
+      v-if="item.type === COMPANIES"
       :form="item"
       @onChangeChildren="onChangeChildren"
       @onRemoveCompany="onRemoveCompany"
@@ -90,6 +98,17 @@ import SalaryInput from "./formComponents/SalaryInput";
 import ImageForm from "./formComponents/ImageForm";
 import MultiSelect from "./formComponents/MultiSelect";
 import CompanyItem from "./CompanyItem";
+import {
+  TEXT,
+  DATE_RANGE,
+  TEXTAREA,
+  DATE,
+  SELECT_CITY,
+  MULTISELECT,
+  DROPZONE,
+  SALARY,
+  COMPANIES,
+} from "@/data/data";
 
 export default {
   props: {
@@ -104,6 +123,15 @@ export default {
   data() {
     return {
       valueInput: "",
+      TEXT,
+      DATE_RANGE,
+      TEXTAREA,
+      DATE,
+      SELECT_CITY,
+      MULTISELECT,
+      DROPZONE,
+      SALARY,
+      COMPANIES,
     };
   },
   watch: {

@@ -23,3 +23,14 @@ export const CITY_LIST = [
   { name: "Huế", value: "Hue" },
   { name: "Cần Thơ", value: "Can Tho" },
 ];
+
+export const SELECT_COMPANY = "select-company";
+export const TEXT = "text";
+export const DATE_RANGE = "daterange";
+export const TEXTAREA = "textarea";
+export const DATE = "date";
+export const SELECT_CITY = "select-city";
+export const MULTISELECT = "multiselect";
+export const DROPZONE = "dropzone";
+export const SALARY = "salary";
+export const COMPANIES = "companies";

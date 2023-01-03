@@ -2,7 +2,7 @@
   <div class="form-company-container">
     <div class="content" v-for="(item, index) in form.fields" :key="item.name">
       <SelectCompany
-        v-if="item.type === 'select-company'"
+        v-if="item.type === SELECT_COMPANY"
         :msg="item.msg"
         :name="item.name"
         :value="item.value"
@@ -13,18 +13,18 @@
       />
       <div
         class="form-group"
-        v-if="item.type != 'select-company'"
+        v-if="item.type != SELECT_COMPANY"
         :class="{ required: item.validation.required }"
       >
         <label
-          v-if="item.type != 'select-company'"
+          v-if="item.type != SELECT_COMPANY"
           class="control-label"
           :for="item.name"
           >{{ item.label }}</label
         >
         <small v-if="item.textSmall">{{ item.textSmall }}</small>
         <InputField
-          v-if="item.type === 'text'"
+          v-if="item.type === TEXT"
           :maxLength="item.validation.maxLength"
           :msg="item.msg"
           :value="item.value"
@@ -33,7 +33,7 @@
           @onInput="(value) => onChangeItem(value, index)"
         />
         <DateRangeForm
-          v-if="item.type === 'daterange'"
+          v-if="item.type === DATE_RANGE"
           :msg="item.msg"
           :value="item.value"
           :name="item.name"
@@ -41,7 +41,7 @@
           @onInput="(value) => onChangeItem(value, index)"
         />
         <TextareaInput
-          v-if="item.type === 'textarea'"
+          v-if="item.type === TEXTAREA"
           :msg="item.msg"
           :name="item.name"
           :value="item.value"
@@ -60,6 +60,7 @@ import SelectCompany from "./formComponents/SelectCompany";
 import InputField from "./formComponents/InputField";
 import DateRangeForm from "./formComponents/DateRangeForm";
 import TextareaInput from "./formComponents/TextareaInput";
+import { DATE_RANGE, SELECT_COMPANY, TEXT, TEXTAREA } from "@/data/data";
 
 export default {
   components: {
@@ -73,6 +74,14 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      DATE_RANGE,
+      SELECT_COMPANY,
+      TEXT,
+      TEXTAREA,
+    };
   },
   methods: {
     onRemoveCompany() {

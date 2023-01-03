@@ -22,6 +22,7 @@
 import { multiForm, formSecondStep } from "@/data/form";
 import { mapActions, mapGetters } from "vuex";
 import FormView from "./FormView";
+import { DATE_RANGE } from "@/data/data";
 
 export default {
   components: {
@@ -103,16 +104,23 @@ export default {
       });
     },
     onInput(value, index) {
-      if (this.formData[index].name === "salary") {
-        this.formData[index].value = value.replace(/^0+/, "");
+      const input = this.formData[index];
+      if (input.name === "salary") {
+        input.value = value.replace(/^0+/, "");
       } else {
-        this.formData[index].value = value;
+        input.value = value;
       }
-      this.formData[index].msg = "";
+      input.msg = "";
     },
     onChangeCompanyForm(value, indexChild, index) {
-      this.formData[index].fields[indexChild].value = value;
-      this.formData[index].fields[indexChild].msg = "";
+      const input = this.formData[index].fields[indexChild];
+      input.value = value;
+      input.msg = "";
+      if (input.type === DATE_RANGE) {
+        this.formData.forEach((form) => {
+          form.fields[indexChild].msg = "";
+        });
+      }
     },
     onSelectJob(option) {
       this.formData.forEach((i) => {

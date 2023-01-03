@@ -56,6 +56,7 @@ import {
   validateLength,
   validateRequired,
 } from "@/utils/validateForm";
+import { DATE, DATE_RANGE, SALARY } from "@/data/data";
 
 export default {
   props: {
@@ -71,6 +72,9 @@ export default {
     return {
       isValid: false,
       multiForm,
+      DATE_RANGE,
+      DATE,
+      SALARY,
     };
   },
   computed: {
@@ -124,25 +128,24 @@ export default {
     },
     goNext() {
       this.validate();
-      let msgText = [];
+      let errBag = [];
       if (!this.isSecondForm) {
         this.formData.forEach((item) => {
           if (item.msg) {
-            msgText.push(item.msg);
+            errBag.push(item.msg);
           }
         });
       } else {
-        msgText = [];
         this.formData.forEach((item) =>
           item.fields.forEach((i) => {
             if (i.msg) {
-              msgText.push(i.msg);
+              errBag.push(i.msg);
             }
           })
         );
       }
 
-      if (!msgText.length) {
+      if (!errBag.length) {
         this.isValid = true;
       }
 
@@ -151,9 +154,7 @@ export default {
         this.$emit("changeForm", this.currentStep + 1);
       } else {
         setTimeout(() => {
-          let el = document
-            .getElementsByClassName("msg-text")[0]
-            .getBoundingClientRect().top;
+          let el = document.getElementsByClassName("msg-text")[0].offsetTop;
           window.scrollTo({
             top: el - 300,
             behavior: "smooth",
@@ -163,58 +164,63 @@ export default {
     },
     validate() {
       if (!this.isSecondForm) {
-        this.formData.forEach((item) => {
+        this.validateCommonForm(this.formData);
+      } else {
+        this.validateFormSecond(this.formData);
+      }
+    },
+    validateCommonForm(formData) {
+      formData.forEach((item) => {
+        if (item.validation.required) {
+          validateRequired(item);
+        }
+        if (item.validation.maxLength) {
+          validateLength(item);
+        }
+        if (item.type === DATE) {
+          validateDate(item);
+        }
+        if (item.type === SALARY) {
+          validateDigit(item);
+        }
+      });
+    },
+    validateFormSecond(formData) {
+      formData.forEach((form) => {
+        form.fields.forEach((item) => {
           if (item.validation.required) {
             validateRequired(item);
           }
           if (item.validation.maxLength) {
             validateLength(item);
           }
-          if (item.type === "date") {
-            validateDate(item);
-          }
-          if (item.type === "salary") {
-            validateDigit(item);
+          if (item.type === DATE_RANGE) {
+            validateDateRange(this.formData);
           }
         });
-      } else {
-        for (let i = 0; i < this.formData.length; i++) {
-          for (let j = 0; j < this.formData[i].fields.length; j++) {
-            if (this.formData[i].fields[j].validation.required) {
-              validateRequired(this.formData[i].fields[j]);
-            }
-            if (this.formData[i].fields[j].validation.maxLength) {
-              validateLength(this.formData[i].fields[j]);
-            }
-            if (this.formData[i].fields[j].type === "daterange") {
-              validateDateRange(this.formData);
-            }
-          }
-        }
-      }
+      });
     },
     goToStep(step) {
       if (step > this.currentStep) {
         this.validate();
-        let msgText = [];
+        let errBag = [];
         if (!this.isSecondForm) {
           this.formData.forEach((item) => {
             if (item.msg) {
-              msgText.push(item.msg);
+              errBag.push(item.msg);
             }
           });
         } else {
-          msgText = [];
           this.formData.forEach((item) =>
             item.fields.forEach((i) => {
               if (i.msg) {
-                msgText.push(i.msg);
+                errBag.push(i.msg);
               }
             })
           );
         }
 
-        if (!msgText.length) {
+        if (!errBag.length) {
           this.isValid = true;
         }
 

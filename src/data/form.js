@@ -1,12 +1,27 @@
-import { JOB_LIST, COMPANY_LIST, CITY_LIST } from "./data";
+import {
+  JOB_LIST,
+  COMPANY_LIST,
+  CITY_LIST,
+  SELECT_COMPANY,
+  TEXT,
+  DATE_RANGE,
+  TEXTAREA,
+  DATE,
+  SELECT_CITY,
+  MULTISELECT,
+  DROPZONE,
+  SALARY,
+  COMPANIES,
+} from "./data";
 
 export const formSecondStep = {
-  type: "companies",
+  type: COMPANIES,
   validation: {},
   fields: [
     {
+      id: 1,
       label: "Công ty",
-      type: "select-company",
+      type: SELECT_COMPANY,
       placeholder: "--Chọn công ty--",
       name: "company",
       list: COMPANY_LIST,
@@ -17,8 +32,9 @@ export const formSecondStep = {
       },
     },
     {
+      id: 2,
       label: "Vị trí từng làm",
-      type: "text",
+      type: TEXT,
       name: "jobName",
       msg: "",
       value: "",
@@ -28,8 +44,9 @@ export const formSecondStep = {
       },
     },
     {
+      id: 3,
       label: "Thời gian làm việc",
-      type: "daterange",
+      type: DATE_RANGE,
       name: "jobDate",
       msg: "",
       value: { from: "", to: "" },
@@ -38,8 +55,9 @@ export const formSecondStep = {
       },
     },
     {
+      id: 4,
       label: "Mô tả về công việc",
-      type: "textarea",
+      type: TEXTAREA,
       name: "jobDesc",
       msg: "",
       value: "",
@@ -53,8 +71,9 @@ export const formSecondStep = {
 
 const firstForm = [
   {
+    id: 1,
     label: "Họ và tên",
-    type: "text",
+    type: TEXT,
     name: "fullName",
     msg: "",
     value: "",
@@ -64,8 +83,9 @@ const firstForm = [
     },
   },
   {
+    id: 2,
     label: "Ngày sinh",
-    type: "date",
+    type: DATE,
     name: "dob",
     msg: "",
     value: "",
@@ -74,9 +94,10 @@ const firstForm = [
     },
   },
   {
+    id: 3,
     label: "Thành phố",
     placeholder: "--Chọn thành phố--",
-    type: "select-city",
+    type: SELECT_CITY,
     list: CITY_LIST,
     name: "city",
     value: "",
@@ -85,9 +106,10 @@ const firstForm = [
     },
   },
   {
+    id: 4,
     label: "Vị trí làm việc",
     placeholder: "Chọn các vị trí mà bạn muốn",
-    type: "multiselect",
+    type: MULTISELECT,
     list: JOB_LIST,
     textSmall: "Có thể chọn nhiều vị trí mà bạn muốn làm việc",
     name: "jobs",
@@ -97,8 +119,9 @@ const firstForm = [
     },
   },
   {
+    id: 5,
     label: "Mô tả về bản thân",
-    type: "textarea",
+    type: TEXTAREA,
     name: "desc",
     onCounter: true,
     msg: "",
@@ -109,8 +132,9 @@ const firstForm = [
     },
   },
   {
+    id: 6,
     label: "Ảnh cá nhân",
-    type: "dropzone",
+    type: DROPZONE,
     placeholder: "Hãy kéo và thả ảnh vào đây hoặc",
     triggerText: "nhấn vào đây",
     dragText: "Thả ảnh muốn tải lên ở đây",
@@ -129,8 +153,9 @@ const secondForm = [JSON.parse(JSON.stringify(formSecondStep))];
 
 const thirdForm = [
   {
+    id: 7,
     label: "Lý do muốn ứng tuyển vào công ty",
-    type: "textarea",
+    type: TEXTAREA,
     name: "reason",
     onCounter: true,
     msg: "",
@@ -141,8 +166,9 @@ const thirdForm = [
     },
   },
   {
+    id: 8,
     label: "Mức lương mong muốn",
-    type: "salary",
+    type: SALARY,
     name: "salary",
     currency: "VNĐ",
     msg: "",
