@@ -33,6 +33,9 @@ export default {
     };
   },
   methods: {
+    onRemoveFile(file) {
+      this.files = this.files.filter((f) => f.name != file.name);
+    },
     onFileInput(data) {
       this.files = data;
     },
